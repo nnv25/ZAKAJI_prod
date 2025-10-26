@@ -1,11 +1,10 @@
-//Главная страница
+// Главная страница (очищенная версия)
 import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, } from 'react-native';
-import SearchInput from '../components/ui/SearchInput';
-import RestaurantCard from '../components/blocks/RestaurantCard';
-import BottomNavigation from '../components/blocks/BottomNavigation'; 
-import Header from '../components/blocks/Header';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import SearchInput from '../components/ui/SearchInput';
+import RestaurantCard from '../components/blocks/RestaurantCard'; 
+import Header from '../components/blocks/Header';
 import BannerCarousel from '@/components/blocks/BannerCarousel';
 
 const restaurants = [                                                   
@@ -20,7 +19,10 @@ const restaurants = [
 export default function RestaurantsScreen() {      
   const [activeTab, setActiveTab] = useState<'all' | 'open'>('all');
   return (
-    <SafeAreaView style={styles.container}>           
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <StatusBar barStyle="dark-content" backgroundColor='#FFFFFF'/>
+      
+      {/* Header с безопасными отступами */}
       <View style={styles.header}>
         <Header />
         <SearchInput />
@@ -44,6 +46,8 @@ export default function RestaurantsScreen() {
           </TouchableOpacity>
         </View>
       </View>
+      
+      {/* Контент с ресторанами */}
       <FlatList
         data={restaurants}      
         numColumns={3}
@@ -57,12 +61,10 @@ export default function RestaurantsScreen() {
           />
         )}
         keyExtractor={(item) => item.id.toString()}
-        columnWrapperStyle={{ justifyContent: 'space-between' }}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        columnWrapperStyle={styles.columnWrapper}
+        contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       />
-
-      <BottomNavigation />
     </SafeAreaView>
   );
 }
@@ -71,12 +73,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F9F9F9',
-    paddingHorizontal: 16,
   },
   header: {
     backgroundColor: '#FFFFFF', 
-    paddingTop: 20,
-    marginBottom: 10,
+    paddingHorizontal: 16,
+    paddingBottom: 10, // 👈 ИЗМЕНИЛ НА paddingBottom
   },
   tabs: {
     flexDirection: 'row',
@@ -93,5 +94,12 @@ const styles = StyleSheet.create({
     color: '#000',
     borderBottomWidth: 2,
     borderBottomColor: '#CDE589',
+  },
+  columnWrapper: {
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+  },
+  listContent: {
+    paddingBottom: 100,
   },
 });

@@ -2,7 +2,7 @@
 import React from 'react';
 // Импортируем базовые компоненты React Native
 // View — контейнер, TouchableOpacity — кликабельная зона (для иконок)
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 // Импортируем набор иконок Ionicons из Expo
 // Мы будем использовать "menu-outline" и "person-outline"
 import { Ionicons } from '@expo/vector-icons';
@@ -17,7 +17,11 @@ export default function Header() {
       <TouchableOpacity onPress={() => console.log('Открыть боковое меню')}>
         <Ionicons name="menu-outline" size={28} color="#000" />
       </TouchableOpacity>
-      {/* Правая кнопка — иконка профиля */}
+      <Image
+        source={require('../../assets/images/logo.png')}
+        style={styles.logo}
+      />
+      {/* Правая кнопка — иконка профиля */}      
       <TouchableOpacity onPress={() => console.log('Открыть профиль')}>
         <Ionicons name="person-outline" size={28} color="#000" />
       </TouchableOpacity>
@@ -33,11 +37,15 @@ const styles = StyleSheet.create({
     height: 30,
     flexDirection: 'row',        // Расположить элементы в одну линию
     justifyContent: 'space-between', // Разнести иконки по краям
-    alignItems: 'center',        // Центрировать по вертикали
+    alignItems: "flex-start",        // Центрировать по вертикали
     paddingHorizontal: 20,       // Отступы по бокам
     paddingTop: 3,              // Отступ сверху (для статус-бара)
     paddingBottom: 3,           // Немного воздуха снизу
     backgroundColor: '#FFFFFF',  // Белый фон, как на макете
     marginBottom: 20,
   },
+  logo:{
+    width:150,
+    height:32,
+  }
 });

@@ -1,46 +1,43 @@
-// components/blocks/order/OrderItemsList.tsx
-import React from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useCart } from '@/context/CartContext';
+import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function OrderItemsList() {
-  const { cartItems, updateQuantity, removeFromCart } = useCart();
+  const { cartItems, removeFromCart } = useCart();
 
   const renderCartItem = ({ item }) => (
     <View style={styles.cartItem}>
+      {/* Фото блюда */}
       {item.image && (
         <Image
-          source={{ uri: item.image }} 
+          source={item.image}
           style={styles.itemImage}
         />
       )}
+
+      {/* Информация о блюде */}
       <View style={styles.itemInfo}>
-        <Text style={styles.itemTitle}>{item.title}</Text>
-        <Text style={styles.itemDescription}>{item.description}</Text>
-        <View style={styles.itemDetails}>
-          <Text style={styles.itemPrice}>₽ {item.price}</Text>
+        <Text style={styles.itemTitle} numberOfLines={1}>
+          {item.title}
+        </Text>
+        <Text style={styles.itemDescription} numberOfLines={1}>
+          {item.description}
+        </Text>
+
+        <View style={styles.itemBottomRow}>
+          <Text style={styles.itemPrice}>₽ {item.price.toFixed(2)}</Text>
           <Text style={styles.itemWeight}>{item.weight}</Text>
         </View>
       </View>
-      
-      <View style={styles.quantityContainer}>
-        <TouchableOpacity 
-          style={styles.quantityButton}
-          onPress={() => updateQuantity(item.id, item.quantity - 1)}
-        >
-          <Ionicons name="remove" size={20} color="#000" />
-        </TouchableOpacity>
-        
-        <Text style={styles.quantity}>{item.quantity}</Text>
-        
-        <TouchableOpacity 
-          style={styles.quantityButton}
-          onPress={() => updateQuantity(item.id, item.quantity + 1)}
-        >
-          <Ionicons name="add" size={20} color="#000" />
-        </TouchableOpacity>
-      </View>
+
+      {/* Кнопка удаления */}
+      <TouchableOpacity
+        style={styles.deleteButton}
+        onPress={() => removeFromCart(item.id)}
+      >
+        <Ionicons name="trash-outline" size={20} color="#fff" />
+      </TouchableOpacity>
     </View>
   );
 
@@ -62,87 +59,71 @@ export default function OrderItemsList() {
 
 const styles = StyleSheet.create({
   listContent: {
-    padding: 16,
-    paddingBottom: 200,
+    paddingBottom: 16,
+    paddingTop: 12,
   },
   cartItem: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+    marginHorizontal: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
     elevation: 2,
   },
   itemImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 8,
+    width: 99,
+    height: 88,
+    borderRadius: 10,
     marginRight: 12,
   },
   itemInfo: {
     flex: 1,
-    marginRight: 12,
   },
   itemTitle: {
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 4,
+    color: '#000',
   },
   itemDescription: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 8,
-    lineHeight: 18,
+    fontSize: 13,
+    color: '#777',
+    marginBottom: 6,
   },
-  itemDetails: {
+  itemBottomRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent: 'center',
   },
   itemPrice: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '700',
     color: '#000',
   },
   itemWeight: {
-    fontSize: 14,
-    color: '#777',
+    fontSize: 13,
+    color: '#666',
   },
-  quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 8,
-    padding: 4,
-  },
-  quantityButton: {
-    width: 32,
-    height: 32,
+  deleteButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#FF5C5C',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 6,
-  },
-  quantity: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginHorizontal: 12,
-    minWidth: 20,
-    textAlign: 'center',
+    marginLeft: 8,
   },
   emptyContainer: {
+    paddingVertical: 50,
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 40,
   },
   emptyText: {
-    fontSize: 16,
     color: '#999',
+    fontSize: 16,
   },
 });

@@ -1,6 +1,6 @@
 // components/blocks/order/OrderTabs.tsx
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 type TabType = 'order' | 'history';
 

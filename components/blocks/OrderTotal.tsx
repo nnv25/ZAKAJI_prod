@@ -1,7 +1,7 @@
 // components/blocks/order/OrderTotal.tsx
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useCart } from '@/context/CartContext';
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function OrderTotal() {
   const { getTotalPrice, cartItems } = useCart();
@@ -38,27 +38,23 @@ export default function OrderTotal() {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    marginTop: 12,
   },
   totalPrice: {
+    textAlign: 'center',
     fontSize: 24,
     fontWeight: '700',
-    color: '#000',
+    marginBottom: 8,
   },
   orderButton: {
     backgroundColor: '#CDE589',
     borderRadius: 12,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-  },
-  disabledButton: {
-    backgroundColor: '#E5E5E5',
+    paddingVertical: 14,
+    alignItems: 'center',
   },
   orderButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '700',
     color: '#000',
   },
 });

@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, TouchableOpacity, Image, StyleSheet, Platform, Text } from 'react-native';
-import { useRouter } from 'expo-router';
 import { useCart } from '@/context/CartContext';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface NavBarProps {
   restaurantName?: string; // Добавляем проп для названия ресторана
@@ -51,7 +51,6 @@ export default function NavBar({restaurantName}: NavBarProps) {
 const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
-    flex: 1,
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,

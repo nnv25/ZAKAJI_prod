@@ -104,8 +104,8 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   itemImage: {
-    width: 70,
-    height: 70,
+    width: 99,
+    height: 88,
     borderRadius: 10,
     marginRight: 12,
   },
@@ -125,7 +125,8 @@ const styles = StyleSheet.create({
   },
   itemBottomRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
+    gap: 10,
   },
   itemPrice: {
     fontSize: 15,

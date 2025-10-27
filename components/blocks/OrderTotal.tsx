@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 14,
     alignItems: 'center',
+    width: 200,
   },
   orderButtonText: {
     fontSize: 18,

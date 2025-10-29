@@ -1,4 +1,4 @@
-// components/blocks/BannerCarousel.tsx
+// Баннер главной страницы
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Image, ScrollView, Dimensions, StyleSheet } from 'react-native';
 

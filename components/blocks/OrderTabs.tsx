@@ -1,4 +1,4 @@
-// components/blocks/order/OrderTabs.tsx
+// табы в заказах
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 

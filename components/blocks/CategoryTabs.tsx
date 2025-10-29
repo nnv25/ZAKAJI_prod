@@ -1,9 +1,9 @@
+//категории в меню
 import React, { useState } from 'react';
 import { Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
 const categories = ['Все', 'Горячее', 'Салаты', 'Супы', 'Пицца', 'Напитки', 'Десерт'];
 
-// Добавляем пропсы для управления состоянием
 interface CategoryTabsProps {
   activeCategory: string;
   onCategoryChange: (category: string) => void;
@@ -16,7 +16,7 @@ export default function CategoryTabs({ activeCategory, onCategoryChange }: Categ
         <TouchableOpacity
           key={cat}
           style={[styles.tab, activeCategory === cat && styles.activeTab]}
-          onPress={() => onCategoryChange(cat)} // Используем переданную функцию
+          onPress={() => onCategoryChange(cat)}
         >
           <Text style={[styles.tabText, activeCategory === cat && styles.activeText]}>{cat}</Text>
         </TouchableOpacity>
@@ -30,13 +30,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginVertical: 10,
     paddingHorizontal: 16,
-    height: 40, // 👈 ФИКСИРОВАННАЯ ВЫСОТА
-    minHeight: 40, // 👈 МИНИМАЛЬНАЯ ВЫСОТА
-    maxHeight: 40, // 👈 МАКСИМАЛЬНАЯ ВЫСОТА
+    height: 40,
+    minHeight: 40, 
+    maxHeight: 40, 
   },
   contentContainer: {
-    flexGrow: 0, // 👈 ПРЕДОТВРАЩАЕТ РАСШИРЕНИЕ
-    alignItems: 'flex-start', // 👈 ВЫРАВНИВАНИЕ ПО ЛЕВОМУ КРАЮ
+    flexGrow: 0, 
+    alignItems: 'flex-start',
   },
   tab: {
     paddingHorizontal: 16,

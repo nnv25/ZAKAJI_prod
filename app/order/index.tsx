@@ -1,3 +1,4 @@
+//Главная страница заказа
 import OrderForm from '@/components/blocks/OrderForm';
 import OrderNavBar from '@/components/blocks/OrderNavbar';
 import OrderTabs from '@/components/blocks/OrderTabs';
@@ -20,8 +21,11 @@ export default function OrderScreen() {
     <View style={styles.cartItem}>
       {item.image && <Image source={item.image} style={styles.itemImage} />}
       <View style={styles.itemInfo}>
-        <Text style={styles.itemTitle}>{item.title}</Text>
-        <Text style={styles.itemDescription} numberOfLines={1}>{item.description}</Text>
+        <View style={styles.description}>
+          <Text style={styles.itemTitle}>{item.title}</Text>
+          <Text style={styles.itemDescription} numberOfLines={1}>{item.description}</Text>
+          <Text style={styles.quantityText}>×{item.quantity}</Text>
+        </View>
         <View style={styles.itemBottomRow}>
           <Text style={styles.itemPrice}>₽ {item.price.toFixed(2)}</Text>
           <Text style={styles.itemWeight}>{item.weight}</Text>
@@ -36,11 +40,8 @@ export default function OrderScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-      {/* Верхняя панель */}
       <OrderNavBar restaurantName={restaurantName} />
-      {/* Табы */}
       <OrderTabs />
-      {/* Основной список и контент */}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={{ flex: 1 }}
@@ -56,7 +57,6 @@ export default function OrderScreen() {
               <Text style={styles.emptyText}>Корзина пуста</Text>
             </View>
           }
-          // 👇 Добавляем форму и итог как подвал списка
           ListFooterComponent={
             <View style={styles.footer}>
               <OrderForm />
@@ -112,6 +112,12 @@ const styles = StyleSheet.create({
   itemInfo: {
     flex: 1,
   },
+  description: {
+    width: 120,
+    display: "flex",
+    flexDirection: 'row',
+    alignItems: "center"
+  },
   itemTitle: {
     fontSize: 16,
     fontWeight: '600',
@@ -122,6 +128,14 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#777',
     marginBottom: 6,
+  },
+  quantityText: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginHorizontal: 12,
+    minWidth: 30,
+    textAlign: 'center',
+    color: '#000',
   },
   itemBottomRow: {
     flexDirection: 'row',

@@ -1,4 +1,4 @@
-// components/blocks/order/OrderForm.tsx
+// форма заказа для компонета заказа
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 

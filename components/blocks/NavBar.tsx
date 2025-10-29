@@ -1,21 +1,21 @@
-// components/blocks/Header.tsx
+// Вверх страницы меню
 import { useCart } from '@/context/CartContext';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface NavBarProps {
-  restaurantName?: string; // Добавляем проп для названия ресторана
-  showBackButton?: boolean; // Добавляем проп для показа/скрытия кнопки назад
+  restaurantName?: string;
+  showBackButton?: boolean;
 }
 
 export default function NavBar({restaurantName}: NavBarProps) {
   const router = useRouter();
-  const { getTotalItems } = useCart(); // 👈 Получаем количество товаров
+  const { getTotalItems } = useCart();
   const totalItems = getTotalItems();
 
   const handleBack = () => {
-    router.push('/'); // Переход на главную страницу
+    router.push('/');
   };
 
   const handleOrder = () => {
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 4,
     right: 4,
-    backgroundColor: '#FF4444',
+    backgroundColor: '#C6E583',
     borderRadius: 10,
     minWidth: 20,
     height: 20,
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   badgeText: {
-    color: '#FFFFFF',
+    color: '#000000',
     fontSize: 12,
     fontWeight: 'bold',
   },

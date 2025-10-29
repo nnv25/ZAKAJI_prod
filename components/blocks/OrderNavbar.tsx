@@ -1,3 +1,4 @@
+//Навбар заказа
 import { useCart } from '@/context/CartContext';
 import { useRouter } from 'expo-router';
 import React from 'react';
@@ -10,11 +11,11 @@ interface NavBarProps {
 
 export default function NavBar({restaurantName}: NavBarProps) {
   const router = useRouter();
-  const { getTotalItems } = useCart(); // 👈 Получаем количество товаров
+  const { getTotalItems } = useCart();
   const totalItems = getTotalItems();
 
   const handleBack = () => {
-    router.push('/menu'); // Переход на главную страницу
+    router.push('/menu');
   };
 
   return (
@@ -68,9 +69,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '700',
-    //marginBottom: 10,
-    //paddingHorizontal: 16,
-    //paddingTop: 16,
   },
   orderContainer: {
     position: 'relative',
@@ -87,7 +85,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 4,
     right: 4,
-    backgroundColor: '#FF4444',
+    backgroundColor: '#C6E583',
     borderRadius: 10,
     minWidth: 20,
     height: 20,
@@ -95,7 +93,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   badgeText: {
-    color: '#FFFFFF',
+    color: '#black',
     fontSize: 12,
     fontWeight: 'bold',
   },

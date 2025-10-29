@@ -1,3 +1,4 @@
+//само меню с карточками блюда
 import React from 'react';
 import { FlatList, StyleSheet, View, Text } from 'react-native';
 import DishCard from '../ui/DishCard';
@@ -11,7 +12,7 @@ const data = [
     weight: '150/40 гр.',
     rating: 4.5,
     image: require('../../assets/images/dolma.png'),
-    category: "Горячее" // исправил categories → category
+    category: "Горячее" 
   },
   {
     id: 2,
@@ -21,7 +22,7 @@ const data = [
     weight: '150/40 гр.',
     rating: 4.5,
     image: require('../../assets/images/semga.png'),
-    category: "Салаты" // исправил Салат → Салаты
+    category: "Салаты" 
   },
   {
     id: 3,
@@ -31,7 +32,7 @@ const data = [
     weight: '150/40 гр.',
     rating: 4.5,
     image: require('../../assets/images/semga1.png'),
-    category: "Салаты" // исправил Салат → Салаты
+    category: "Салаты" 
   },
   {
     id: 4,
@@ -60,7 +61,7 @@ const data = [
     price: 550,
     weight: '150/40 гр.',
     rating: 4.5,
-    image: require('../../assets/images/harcho.png'), // возможно нужно другое изображение
+    image: require('../../assets/images/harcho.png'), 
     category: "Горячее"
   },
   {
@@ -140,7 +141,7 @@ const data = [
     price: 170,
     weight: '170 гр.',
     rating: 4.5,
-    image: require('../../assets/images/semga.png'), // возможно нужно другое изображение
+    image: require('../../assets/images/semga.png'), 
     category: "Супы"
   },
   {
@@ -187,11 +188,11 @@ export default function DishList({ activeCategory }: DishListProps) {
       keyExtractor={(item) => item.id.toString()}
       contentContainerStyle={[
         styles.listContent,
-        filteredData.length === 0 && styles.emptyList // 👈 ДОБАВЬ ДЛЯ ПУСТОГО СПИСКА
+        filteredData.length === 0 && styles.emptyList 
       ]}
       columnWrapperStyle={styles.row}
       showsVerticalScrollIndicator={false}
-      ListEmptyComponent={ // 👈 ДОБАВЬ КОМПОНЕНТ ДЛЯ ПУСТОЙ КАТЕГОРИИ
+      ListEmptyComponent={
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText}>В этой категории пока нет блюд</Text>
         </View>
@@ -205,11 +206,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 12,
     paddingBottom: 100,
-    //alignItems: "flex-start",
-    //flexGrow: 1, // 👈 ВАЖНО! УБИРАЕТ ЛИШНЕЕ ПРОСТРАНСТВО
   },
   emptyList: {
-    justifyContent: 'center', // 👈 ЦЕНТРИРУЕТ ПУСТОЙ ТЕКСТ
+    justifyContent: 'center',
     alignItems: 'center',
   },
   row: {

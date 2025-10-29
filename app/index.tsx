@@ -64,6 +64,7 @@ export default function RestaurantsScreen() {
         columnWrapperStyle={styles.columnWrapper}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
+        style={styles.flatList}
       />
     </SafeAreaView>
   );
@@ -78,6 +79,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF', 
     paddingHorizontal: 16,
     paddingBottom: 10, // 👈 ИЗМЕНИЛ НА paddingBottom
+  },
+  flatList: {
+    marginTop: 10, // 👈 Добавляем отступ сверху
   },
   tabs: {
     flexDirection: 'row',

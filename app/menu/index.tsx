@@ -1,10 +1,10 @@
 //Главная страница меню 
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, StatusBar } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
 import CategoryTabs from '@/components/blocks/CategoryTabs';
 import DishList from '@/components/blocks/DishList';
 import NavBar from '@/components/blocks/NavBar';
+import { useLocalSearchParams } from 'expo-router';
+import React, { useState } from 'react';
+import { StatusBar, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function MenuScreen() {

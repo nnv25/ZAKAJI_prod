@@ -1,14 +1,14 @@
+import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 import React from 'react';
 import {
+  Image,
   Modal,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Image,
 } from 'react-native';
-import { BlurView } from 'expo-blur';
-import { Ionicons } from '@expo/vector-icons';
 
 interface OrderModalProps {
   visible: boolean;
@@ -32,14 +32,14 @@ export default function OrderModal({ visible, onClose }: OrderModalProps) {
           </TouchableOpacity>
 
           <Image
-            source={require('../../assets/images/ready.png')}
+            source={require('../../assets/images/ready2.png')}
             style={styles.readyImage}
             resizeMode="contain"
           />
 
-          <Text style={styles.confirmTitle}>Ваш заказ принят!</Text>
+          {/*<Text style={styles.confirmTitle}>Ваш заказ принят!</Text>*/}
           <Text style={styles.confirmSubtitle}>
-            Ожидайте, скоро Ваш заказ будет готов.
+            Ожидайте.
           </Text>
         </View>
       </BlurView>
@@ -79,8 +79,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
   readyImage: {
-    width: 140,
-    height: 140,
+    width: 200,
+    height: 200,
     marginBottom: 16,
   },
   confirmTitle: {
@@ -94,7 +94,9 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
   confirmSubtitle: {
-    fontSize: 14,
+    fontSize: 18,
+    fontStyle: "italic",
+    fontWeight: 700,
     color: '#000',
     textAlign: 'center',
     textShadowColor: 'rgba(255, 255, 255, 0.9)',

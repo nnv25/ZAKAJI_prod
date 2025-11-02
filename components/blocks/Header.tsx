@@ -1,13 +1,16 @@
 //Header главной страницы
-import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
+interface HeaderProps {
+  onMenuPress: () => void; // 👈 добавляем проп для открытия меню
+}
 
-export default function Header() {
+export default function Header({ onMenuPress }: HeaderProps) {
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => console.log('Открыть боковое меню')}>
+      <TouchableOpacity onPress={onMenuPress}>
         <Ionicons name="menu-outline" size={28} color="#000" />
       </TouchableOpacity>
       <Image

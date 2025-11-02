@@ -1,11 +1,12 @@
 // Главная страница (очищенная версия)
-import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import SearchInput from '../components/ui/SearchInput';
-import RestaurantCard from '../components/blocks/RestaurantCard'; 
-import Header from '../components/blocks/Header';
 import BannerCarousel from '@/components/blocks/BannerCarousel';
+import React, { useState } from 'react';
+import { FlatList, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Header from '../components/blocks/Header';
+import RestaurantCard from '../components/blocks/RestaurantCard';
+import SideMenu from '../components/blocks/SideMenu';
+import SearchInput from '../components/ui/SearchInput';
 
 const restaurants = [                                                   
   { id: 1, name: 'Osterio Mario', rating: 4.8, reviews: 163, hours: '10:00 - 23:00', image: require('../assets/images/Osterio.png') },
@@ -18,13 +19,15 @@ const restaurants = [
 
 export default function RestaurantsScreen() {      
   const [activeTab, setActiveTab] = useState<'all' | 'open'>('all');
+  const [menuVisible, setMenuVisible] = useState(false);
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar barStyle="dark-content" backgroundColor='#FFFFFF'/>
       
       {/* Header с безопасными отступами */}
       <View style={styles.header}>
-        <Header />
+        <Header onMenuPress={() => setMenuVisible(true)}/>
         <SearchInput />
         <BannerCarousel/>
         <View style={styles.tabs}>
@@ -66,6 +69,7 @@ export default function RestaurantsScreen() {
         showsVerticalScrollIndicator={false}
         style={styles.flatList}
       />
+       <SideMenu visible={menuVisible} onClose={() => setMenuVisible(false)} />
     </SafeAreaView>
   );
 }

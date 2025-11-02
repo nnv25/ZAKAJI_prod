@@ -1,27 +1,36 @@
 // табы в заказах
-import React, { useState } from 'react';
+import { usePathname, useRouter } from 'expo-router';
+import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-type TabType = 'order' | 'history';
+export type TabType = 'order' | 'history';
 
 export default function OrderTabs() {
-  const [activeTab, setActiveTab] = useState<TabType>('order');
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const activeTab: TabType = pathname.includes('/order/history') ? 'history' : 'order';
+
+  const handleTabPress = (tab: TabType) => {
+    if (tab === 'order') router.push('/order');
+    else router.push('/order/history');
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.tabs}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.tab, activeTab === 'order' && styles.activeTab]}
-          onPress={() => setActiveTab('order')}
+          onPress={() => handleTabPress('order')}
         >
           <Text style={[styles.tabText, activeTab === 'order' && styles.activeTabText]}>
             Заказ
           </Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           style={[styles.tab, activeTab === 'history' && styles.activeTab]}
-          onPress={() => setActiveTab('history')}
+          onPress={() => handleTabPress('history')}
         >
           <Text style={[styles.tabText, activeTab === 'history' && styles.activeTabText]}>
             История
@@ -38,12 +47,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 12,
-  },
-  screenTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    textAlign: 'center',
-    marginBottom: 16,
   },
   tabs: {
     flexDirection: 'row',

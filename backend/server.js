@@ -11,11 +11,13 @@ const port = 4000;
 app.use(express.json());
 app.use(cors());
 
+app.use("/uploads", express.static("uploads"));
+
 //db connection
 connectDB();
 
 //api endpoints
-app.use("/api/restaurant",restaurantRouter)
+app.use("/api/restaurant", restaurantRouter);
 
 app.get("/", (req, res) => {
   res.send("Zakaji API Working");

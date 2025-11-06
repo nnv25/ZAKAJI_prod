@@ -1,66 +1,95 @@
 // Главная страница (очищенная версия)
-import BannerCarousel from '@/components/blocks/BannerCarousel';
-import React, { useState } from 'react';
-import { FlatList, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Header from '../components/blocks/Header';
-import RestaurantCard from '../components/blocks/RestaurantCard';
-import SideMenu from '../components/blocks/SideMenu';
-import SearchInput from '../components/ui/SearchInput';
+import React, { useEffect, useState } from "react";
+import {
+  FlatList,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+  Image,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Header from "../components/blocks/Header";
+import SideMenu from "../components/blocks/SideMenu";
+import SearchInput from "../components/ui/SearchInput";
+import BannerCarousel from "@/components/blocks/BannerCarousel";
+import RestaurantCard from "../components/blocks/RestaurantCard";
 
-const restaurants = [                                                   
-  { id: 1, name: 'Osterio Mario', rating: 4.8, reviews: 163, hours: '10:00 - 23:00', image: require('../assets/images/Osterio.png') },
-  { id: 2, name: 'Хачапури', rating: 4.8, reviews: 163, hours: '10:00 - 23:00', image: require('../assets/images/Hacapuri.png') },
-  { id: 3, name: 'Барашек', rating: 4.8, reviews: 163, hours: '10:00 - 23:00', image: require('../assets/images/Barashek.png') },
-  { id: 4, name: 'Китай Город', rating: 4.8, reviews: 163, hours: '10:00 - 23:00', image: require('../assets/images/Kitai.png') },
-  { id: 5, name: 'Hookah Place', rating: 4.8, reviews: 163, hours: '10:00 - 23:00', image: require('../assets/images/Hookah.png') },
-  { id: 6, name: 'Мама Гата', rating: 4.8, reviews: 163, hours: '10:00 - 23:00', image: require('../assets/images/MamaGata.png') },
-]; 
-
-export default function RestaurantsScreen() {      
-  const [activeTab, setActiveTab] = useState<'all' | 'open'>('all');
+export default function RestaurantsScreen() {
+  const [activeTab, setActiveTab] = useState("all");
   const [menuVisible, setMenuVisible] = useState(false);
+  const [restaurants, setRestaurants] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // ✅ Загрузка ресторанов с сервера
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      try {
+        const res = await fetch("http://192.168.0.15:4000/api/restaurant/all");
+        const data = await res.json();
+        setRestaurants(data);
+      } catch (error) {
+        console.error("Ошибка при загрузке ресторанов:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRestaurants();
+  }, []);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" color="#CDE589" style={{ marginTop: 40 }} />
+      </SafeAreaView>
+    );
+  }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <StatusBar barStyle="dark-content" backgroundColor='#FFFFFF'/>
-      
-      {/* Header с безопасными отступами */}
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <View style={styles.header}>
-        <Header onMenuPress={() => setMenuVisible(true)}/>
+        <Header onMenuPress={() => setMenuVisible(true)} />
         <SearchInput />
-        <BannerCarousel/>
+        <BannerCarousel />
+
         <View style={styles.tabs}>
-          <TouchableOpacity onPress={() => setActiveTab('all')}>
-            <Text style={[
+          <TouchableOpacity onPress={() => setActiveTab("all")}>
+            <Text
+              style={[
                 styles.tab,
-                activeTab === 'all' && styles.activeTab,
-              ]}>
-                Все
+                activeTab === "all" && styles.activeTab,
+              ]}
+            >
+              Все
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setActiveTab('open')}>
-            <Text style={[
+          <TouchableOpacity onPress={() => setActiveTab("open")}>
+            <Text
+              style={[
                 styles.tab,
-                activeTab === 'open' && styles.activeTab,
-              ]}>
-                Работают сейчас
-            </Text>        
+                activeTab === "open" && styles.activeTab,
+              ]}
+            >
+              Работают сейчас
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
-      
-      {/* Контент с ресторанами */}
+
       <FlatList
-        data={restaurants}      
+        data={restaurants}
         numColumns={3}
-        renderItem={({ item }) => (        
+        renderItem={({ item }) => (
           <RestaurantCard
-            name={item.name} 
-            rating={item.rating}   
-            reviews={item.reviews}          
-            hours={item.hours}           
-            image={item.image}
+            name={item.name}
+            rating={4.8}
+            reviews={163}
+            hours={`${item.worktime.weekdays}`}
+            image={{ uri: item.image }}
           />
         )}
         keyExtractor={(item) => item.id.toString()}
@@ -69,42 +98,43 @@ export default function RestaurantsScreen() {
         showsVerticalScrollIndicator={false}
         style={styles.flatList}
       />
-       <SideMenu visible={menuVisible} onClose={() => setMenuVisible(false)} />
+
+      <SideMenu visible={menuVisible} onClose={() => setMenuVisible(false)} />
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({                                     
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: "#F9F9F9",
   },
   header: {
-    backgroundColor: '#FFFFFF', 
+    backgroundColor: "#FFFFFF",
     paddingHorizontal: 16,
-    paddingBottom: 10, // 👈 ИЗМЕНИЛ НА paddingBottom
+    paddingBottom: 10,
   },
   flatList: {
-    marginTop: 10, // 👈 Добавляем отступ сверху
+    marginTop: 10,
   },
   tabs: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 12,
   },
   tab: {
     fontSize: 12,
-    color: '#777',
+    color: "#777",
     marginRight: 16,
     paddingBottom: 4,
     paddingLeft: 10,
   },
   activeTab: {
-    color: '#000',
+    color: "#000",
     borderBottomWidth: 2,
-    borderBottomColor: '#CDE589',
+    borderBottomColor: "#CDE589",
   },
   columnWrapper: {
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
     paddingHorizontal: 16,
   },
   listContent: {

@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { connectDB } from "./config/db.js";
+import restaurantRouter from "./routes/restaurantRoute.js";
 
 //app config
 const app = express();
@@ -12,6 +13,9 @@ app.use(cors());
 
 //db connection
 connectDB();
+
+//api endpoints
+app.use("/api/restaurant",restaurantRouter)
 
 app.get("/", (req, res) => {
   res.send("Zakaji API Working");

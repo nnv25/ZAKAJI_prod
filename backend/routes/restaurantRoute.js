@@ -1,25 +1,28 @@
 import express from "express";
+import multer from "multer";
 import {
   addRestaurant,
   getAllRestaurants,
+  getRestaurantById,
+  updateRestaurant,
+  deleteRestaurant,
+  toggleBanRestaurant,
 } from "../controllers/restaurantController.js";
-import multer from "multer";
 
 const restaurantRouter = express.Router();
 
-//Image Storage Engine
 const storage = multer.diskStorage({
   destination: "uploads",
-  filename: (req, file, cb) => {
-    return cb(null, `${Date.now()}${file.originalname}`);
-  },
+  filename: (req, file, cb) => cb(null, `${Date.now()}_${file.originalname}`),
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
 restaurantRouter.post("/add", upload.single("image"), addRestaurant);
-
-// Получить все рестораны
 restaurantRouter.get("/all", getAllRestaurants);
+restaurantRouter.get("/:id", getRestaurantById);
+restaurantRouter.put("/update/:id", upload.single("image"), updateRestaurant);
+restaurantRouter.delete("/:id", deleteRestaurant); // 👈 удалить
+restaurantRouter.patch("/ban/:id", toggleBanRestaurant); // 👈 бан/разбан
 
 export default restaurantRouter;

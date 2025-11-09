@@ -1,5 +1,6 @@
 // табы в заказах
-import { usePathname, useRouter } from 'expo-router';
+// табы в заказах
+import { usePathname, useRouter, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -8,12 +9,28 @@ export type TabType = 'order' | 'history';
 export default function OrderTabs() {
   const router = useRouter();
   const pathname = usePathname();
+  const params = useLocalSearchParams(); // 👈 добавили получение параметров
 
   const activeTab: TabType = pathname.includes('/order/history') ? 'history' : 'order';
 
   const handleTabPress = (tab: TabType) => {
-    if (tab === 'order') router.push('/order');
-    else router.push('/order/history');
+    if (tab === 'order') {
+      router.push({
+        pathname: '/order',
+        params: {
+          restaurantId: params.restaurantId, // 👈 передаём ID ресторана
+          restaurantName: params.restaurantName, // 👈 и его имя
+        },
+      });
+    } else {
+      router.push({
+        pathname: '/order/history',
+        params: {
+          restaurantId: params.restaurantId,
+          restaurantName: params.restaurantName,
+        },
+      });
+    }
   };
 
   return (

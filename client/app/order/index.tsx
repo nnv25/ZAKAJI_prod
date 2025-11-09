@@ -23,6 +23,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function OrderScreen() {
   const params = useLocalSearchParams();
   const restaurantName = (params.restaurantName as string) || 'Ресторан';
+  const restaurantId = params.restaurantId as string;
   const { cartItems, removeFromCart } = useCart();
 
   const renderCartItem = ({ item }) => (
@@ -50,7 +51,7 @@ export default function OrderScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-      <OrderNavBar restaurantName={restaurantName} />
+      <OrderNavBar restaurantName={restaurantName}  restaurantId={restaurantId}/>
       <OrderTabs />
       <KeyboardAwareFlatList
         data={cartItems}

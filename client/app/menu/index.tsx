@@ -10,22 +10,22 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function MenuScreen() {
   const params = useLocalSearchParams();
   const restaurantName = params.restaurantName as string;
+  const restaurantId = params.restaurantId as string;
   const [activeCategory, setActiveCategory] = useState('Все');
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <StatusBar barStyle="dark-content" backgroundColor='#FFFFFF' />
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <View style={styles.header}>
-        <NavBar restaurantName={restaurantName}/>
+        <NavBar restaurantName={restaurantName} restaurantId={params.restaurantId}/>
       </View>
       <View style={styles.content}>
-        {/* Передаем состояние в CategoryTabs */}
-        <CategoryTabs 
+        <CategoryTabs
+          restaurantId={restaurantId} // 👈 добавлено
           activeCategory={activeCategory}
           onCategoryChange={setActiveCategory}
         />
-        {/* Передаем активную категорию в DishList для фильтрации */}
-        <DishList activeCategory={activeCategory} />
+        <DishList activeCategory={activeCategory} restaurantId={restaurantId} />
       </View>
     </SafeAreaView>
   );
@@ -36,11 +36,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F9F9F9',
   },
-  header:{
+  header: {
     flexDirection: 'row',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
   },
-  content:{
+  content: {
     flex: 1,
-  }
+  },
 });

@@ -7,13 +7,18 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import RegistrationModal from '../Modal/RegistrationModal';
 import OrderModal from '../Modal/OrderModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLocalSearchParams } from 'expo-router';
 
 export default function OrderTotal() {
   const { getTotalPrice, cartItems, clearCart } = useCart();
   const totalPrice = getTotalPrice();
+  const params = useLocalSearchParams();
+  const restaurantId = params.restaurantId as string;
 
   const [modalVisible, setModalVisible] = useState(false);
   const [confirmVisible, setConfirmVisible] = useState(false);
@@ -24,12 +29,24 @@ export default function OrderTotal() {
   const [agree1, setAgree1] = useState(false);
   const [agree2, setAgree2] = useState(false);
 
-  const handlePlaceOrder = () => {
+  const [tableNumber, setTableNumber] = useState('');
+  const [message, setMessage] = useState('');
+
+  /** 🔹 Проверка пользователя и открытие модалки при необходимости */
+  const handlePlaceOrder = async () => {
     if (cartItems.length === 0) {
       alert('Добавьте товары в корзину');
       return;
     }
 
+    const savedUser = await AsyncStorage.getItem('user');
+    if (savedUser) {
+      // Пользователь уже зарегистрирован — оформляем заказ
+      await handleSendOrder(JSON.parse(savedUser));
+      return;
+    }
+
+    // Иначе показываем окно регистрации
     setModalVisible(true);
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -39,6 +56,47 @@ export default function OrderTotal() {
     }).start();
   };
 
+  /** 🔹 Отправка заказа на сервер */
+  const handleSendOrder = async (user: any) => {
+    try {
+      const orderData = {
+        userId: user._id,
+        restaurantId,
+        items: cartItems.map((item) => ({
+          food: item.id,
+          title: item.title,
+          quantity: item.quantity,
+          price: item.price,
+          weight: item.weight,
+          image: item.imageUrl,
+        })),
+        tableNumber,
+        comment: message,
+        totalPrice,
+      };
+
+      const res = await fetch('http://192.168.0.15:4000/api/orders/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        Alert.alert('✅ Заказ оформлен', 'Ваш заказ успешно создан!');
+        clearCart();
+        setConfirmVisible(true);
+      } else {
+        Alert.alert('Ошибка', data.message || 'Не удалось оформить заказ');
+      }
+    } catch (error) {
+      console.error('Ошибка отправки заказа:', error);
+      Alert.alert('Ошибка', 'Не удалось подключиться к серверу');
+    }
+  };
+
+  /** 🔹 Закрытие окна регистрации */
   const handleCloseModal = () => {
     Animated.timing(fadeAnim, {
       toValue: 0,
@@ -47,18 +105,48 @@ export default function OrderTotal() {
     }).start(() => setModalVisible(false));
   };
 
+  /** 🔹 Закрытие окна подтверждения */
   const handleCloseConfirm = () => {
     setConfirmVisible(false);
     clearCart();
   };
 
+  /** 🔹 Проверка заполненности формы */
   const isFormValid = name.trim() !== '' && phone.length >= 18 && agree1 && agree2;
 
-  const handleRegister = () => {
+  /** 🔹 После успешной регистрации — сохраняем и оформляем заказ */
+  const handleRegister = async () => {
     if (!isFormValid) return;
 
-    handleCloseModal();
-    setTimeout(() => setConfirmVisible(true), 300);
+    try {
+      const cleanedPhone = phone.replace(/\s|\(|\)|-/g, '');
+
+      const response = await fetch('http://192.168.0.15:4000/api/users/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone: cleanedPhone }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        await AsyncStorage.setItem('user', JSON.stringify(data.user));
+
+        if (data.isLogin) {
+          Alert.alert('Вход', 'Вы успешно вошли в аккаунт!');
+        } else {
+          Alert.alert('Регистрация', 'Вы успешно зарегистрировались!');
+        }
+
+        handleCloseModal();
+        await handleSendOrder(data.user);
+      } else {
+        Alert.alert('Ошибка', data.message || 'Не удалось зарегистрироваться');
+      }
+    } catch (error) {
+      console.error('Ошибка регистрации:', error);
+      Alert.alert('Ошибка', 'Не удалось подключиться к серверу');
+    }
   };
 
   return (
@@ -66,10 +154,7 @@ export default function OrderTotal() {
       <Text style={styles.totalPrice}>{totalPrice.toFixed(2)} ₽</Text>
 
       <TouchableOpacity
-        style={[
-          styles.orderButton,
-          cartItems.length === 0 && styles.disabledButton,
-        ]}
+        style={[styles.orderButton, cartItems.length === 0 && styles.disabledButton]}
         onPress={handlePlaceOrder}
         disabled={cartItems.length === 0}
       >
@@ -93,10 +178,7 @@ export default function OrderTotal() {
         isFormValid={isFormValid}
       />
 
-      <OrderModal
-        visible={confirmVisible}
-        onClose={handleCloseConfirm}
-      />
+      <OrderModal visible={confirmVisible} onClose={handleCloseConfirm} />
     </View>
   );
 }

@@ -5,18 +5,25 @@ import React from 'react';
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface NavBarProps {
-  restaurantName?: string; // Добавляем проп для названия ресторана
-  showBackButton?: boolean; // Добавляем проп для показа/скрытия кнопки назад
+  restaurantName?: string;
+  restaurantId?: string; // 👈 добавляем id ресторана
+  showBackButton?: boolean;
 }
 
-export default function NavBar({restaurantName}: NavBarProps) {
+export default function NavBar({restaurantName, restaurantId}: NavBarProps) {
   const router = useRouter();
   const { getTotalItems } = useCart();
   const totalItems = getTotalItems();
 
   const handleBack = () => {
-    router.push('/menu');
-  };
+  router.push({
+    pathname: '/menu',
+    params: {
+      restaurantId,
+      restaurantName,
+    },
+  });
+};
 
   return (
     <View style={styles.header}>

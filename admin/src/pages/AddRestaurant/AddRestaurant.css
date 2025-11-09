@@ -48,7 +48,7 @@
 
 .addshop-input {
 	width: 100%;
-	max-width: 700px;
+	max-width: 500px;
 	padding: 10px 14px;
 	font-size: 16px;
 	border: 1px solid #ccc;
@@ -71,9 +71,11 @@
 }
 
 .shop-title-time {
+	display: inline-block;
 	font-family: "Opensans";
 	font-size: 14px;
 	color: black;
+	width: 50px;
 }
 
 .shop-worktime {

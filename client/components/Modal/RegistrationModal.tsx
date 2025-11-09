@@ -1,23 +1,25 @@
 //модалное окно регистрации
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Animated,
-  Easing,
   Modal,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface RegistrationModalProps {
   visible: boolean;
   fadeAnim: Animated.Value;
   onClose: () => void;
-  onRegister: () => void;
+  onRegister: () => void; // вызывается после успешной регистрации
   name: string;
   setName: (text: string) => void;
   phone: string;
@@ -44,7 +46,8 @@ export default function RegistrationModal({
   setAgree2,
   isFormValid,
 }: RegistrationModalProps) {
-  
+  const [loading, setLoading] = useState(false);
+
   const handlePhoneChange = (text: string) => {
     let cleaned = text.replace(/\D/g, '');
     if (!cleaned.startsWith('7')) cleaned = '7' + cleaned;
@@ -58,13 +61,46 @@ export default function RegistrationModal({
     setPhone(formatted.trim());
   };
 
+  const handleSubmit = async () => {
+  if (!isFormValid) return;
+
+  try {
+    setLoading(true);
+
+    const cleanedPhone = phone.replace(/\s|\(|\)|-/g, '');
+
+    const response = await fetch('http://192.168.0.15:4000/api/users/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, phone: cleanedPhone }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      await AsyncStorage.setItem('user', JSON.stringify(data.user));
+
+      // 👇 проверяем флаг isLogin, чтобы показать правильный текст
+      if (data.isLogin) {
+        Alert.alert('Вход', 'Вы успешно вошли в аккаунт!');
+      } else {
+        Alert.alert('Регистрация', 'Вы успешно зарегистрировались!');
+      }
+
+      onRegister(); // уведомляем родителя
+    } else {
+      Alert.alert('Ошибка', data.message || 'Не удалось зарегистрироваться');
+    }
+  } catch (error) {
+    console.error('Ошибка регистрации:', error);
+    Alert.alert('Ошибка', 'Не удалось подключиться к серверу');
+  } finally {
+    setLoading(false);
+  }
+};
+
   return (
-    <Modal
-      transparent
-      visible={visible}
-      animationType="fade"
-      onRequestClose={onClose}
-    >
+    <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
       <Animated.View style={[styles.modalOverlay, { opacity: fadeAnim }]}>
         <BlurView intensity={30} tint="light" style={styles.blurContainer}>
           <View style={styles.modalContent}>
@@ -85,7 +121,7 @@ export default function RegistrationModal({
               value={name}
               onChangeText={setName}
             />
-            
+
             <TextInput
               placeholder="+7 (999) 999-99-99"
               placeholderTextColor="#666"
@@ -115,18 +151,19 @@ export default function RegistrationModal({
               <View style={[styles.checkbox, agree2 && styles.checkedBox]}>
                 {agree2 && <Ionicons name="checkmark" size={14} color="#fff" />}
               </View>
-              <Text style={styles.checkboxText}>Пользовательское соглашение</Text>
+              <Text style={styles.checkboxText}>Политика конфиденциальности</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[
-                styles.registerButton,
-                !isFormValid && styles.disabledButton,
-              ]}
-              onPress={onRegister}
-              disabled={!isFormValid}
+              style={[styles.registerButton, !isFormValid && styles.disabledButton]}
+              onPress={handleSubmit}
+              disabled={!isFormValid || loading}
             >
-              <Text style={styles.registerText}>зарегистрироваться</Text>
+              {loading ? (
+                <ActivityIndicator color="#000" />
+              ) : (
+                <Text style={styles.registerText}>Зарегистрироваться</Text>
+              )}
             </TouchableOpacity>
           </View>
         </BlurView>
@@ -176,9 +213,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 10,
     color: '#000',
-    textShadowColor: 'rgba(255, 255, 255, 0.9)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
   },
   input: {
     width: '100%',
@@ -191,9 +225,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     fontSize: 16,
     color: '#000',
-    textShadowColor: 'rgba(255, 255, 255, 0.9)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
   },
   checkboxRow: {
     flexDirection: 'row',
@@ -218,9 +249,6 @@ const styles = StyleSheet.create({
   checkboxText: {
     fontSize: 14,
     color: '#000',
-    textShadowColor: 'rgba(255, 255, 255, 0.9)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
   },
   registerButton: {
     backgroundColor: '#CDE589',

@@ -6,43 +6,46 @@ import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react
 
 interface NavBarProps {
   restaurantName?: string;
+  restaurantId?: string; 
   showBackButton?: boolean;
 }
 
-export default function NavBar({restaurantName}: NavBarProps) {
+export default function NavBar({ restaurantName, restaurantId }: NavBarProps) {
   const router = useRouter();
   const { getTotalItems } = useCart();
   const totalItems = getTotalItems();
 
   const handleBack = () => {
-    router.push('/');
+    router.push('/'); // возврат на главную
   };
 
   const handleOrder = () => {
+    if (!restaurantId) {
+      console.warn('⚠️ restaurantId отсутствует при переходе к заказу');
+      return;
+    }
+
     router.push({
       pathname: '/order',
-      params: { restaurantName },
+      params: { restaurantName, restaurantId },
     });
   };
 
   return (
     <View style={styles.header}>
       <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-        <Image 
+        <Image
           source={require('../../assets/images/back_arrow.png')}
           style={styles.backIcon}
         />
       </TouchableOpacity>
-      <Text style={styles.title}>
-        {restaurantName || 'Ресторан'}
-      </Text>
+      <Text style={styles.title}>{restaurantName || 'Ресторан'}</Text>
       <View style={styles.orderContainer}>
         <TouchableOpacity onPress={handleOrder} style={styles.orderButton}>
-          <Image 
+          <Image
             source={require('../../assets/images/order_icon.png')}
             style={styles.orderIcon}
           />
-          {/* Бейдж с количеством */}
           {totalItems > 0 && (
             <View style={styles.badge}>
               <Text style={styles.badgeText}>
@@ -58,40 +61,19 @@ export default function NavBar({restaurantName}: NavBarProps) {
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: 'row',
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'android' ? 25 : 0, // Простой отступ для Android
-    height: Platform.OS === 'android' ? 85 : 60, // Увеличиваем высоту для Android
+    flexDirection: 'row', 
+    flex: 1, 
+    alignItems: "center", 
+    justifyContent: "space-between", 
+    paddingHorizontal: 16, 
+    paddingTop: Platform.OS === 'android' ? 25 : 0,
   },
-  backButton: {
-    padding: 8,
-  },
-  backIcon: {
-    width: 24,
-    height: 24,
-    resizeMode: 'contain',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    //marginBottom: 10,
-    //paddingHorizontal: 16,
-    //paddingTop: 16,
-  },
-  orderContainer: {
-    position: 'relative',
-  },
-  orderButton: {
-    padding: 8,
-  },
-  orderIcon: {
-    width: 24,
-    height: 24,
-    resizeMode: 'contain',
-  },
+  backButton: { padding: 8 },
+  backIcon: { width: 24, height: 24, resizeMode: 'contain' },
+  title: { fontSize: 20, fontWeight: '700', maxWidth:'60%', textAlign: 'center' },
+  orderContainer: { position: 'relative' },
+  orderButton: { padding: 8 },
+  orderIcon: { width: 24, height: 24, resizeMode: 'contain' },
   badge: {
     position: 'absolute',
     top: 4,
@@ -104,8 +86,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   badgeText: {
-    color: '#000000',
+    color: '#000',
     fontSize: 12,
     fontWeight: 'bold',
   },
-}); 
+});

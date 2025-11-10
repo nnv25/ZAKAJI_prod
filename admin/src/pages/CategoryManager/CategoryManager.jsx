@@ -9,6 +9,7 @@ const CategoryManager = () => {
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
   const [loading, setLoading] = useState(false);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   // ✅ Загрузка категорий
   const fetchCategories = async () => {
@@ -19,7 +20,7 @@ const CategoryManager = () => {
 
     try {
       const res = await fetch(
-        `http://192.168.0.15:4000/api/category/${selectedShop}`
+        `${API_URL}/api/category/${selectedShop}`
       );
       const data = await res.json();
       setCategories(data);
@@ -37,7 +38,7 @@ const CategoryManager = () => {
   const handleAdd = async () => {
     if (!newCategory.trim()) return toast.warning("Введите название категории");
     try {
-      const res = await fetch("http://192.168.0.15:4000/api/category/add", {
+      const res = await fetch(`${API_URL}/api/category/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -60,7 +61,7 @@ const CategoryManager = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Удалить категорию?")) return;
     try {
-      const res = await fetch(`http://192.168.0.15:4000/api/category/${id}`, {
+      const res = await fetch(`${API_URL}/api/category/${id}`, {
         method: "DELETE",
       });
       const data = await res.json();

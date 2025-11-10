@@ -2,16 +2,13 @@ import Order from "../models/orderModel.js";
 import User from "../models/userModel.js";
 import Restaurant from "../models/restaurantModel.js";
 
-// Создание нового заказа
+// ✅ Создание нового заказа
 export const createOrder = async (req, res) => {
   try {
-    const { userId, restaurantId, items, tableNumber, comment, totalPrice } =
-      req.body;
+    const { userId, restaurantId, items, tableNumber, comment, totalPrice } = req.body;
 
     if (!userId || !restaurantId || !items?.length) {
-      return res
-        .status(400)
-        .json({ message: "Не хватает данных для оформления заказа" });
+      return res.status(400).json({ message: "Не хватает данных для оформления заказа" });
     }
 
     // Проверим пользователя и ресторан
@@ -19,9 +16,7 @@ export const createOrder = async (req, res) => {
     const restaurant = await Restaurant.findById(restaurantId);
 
     if (!user || !restaurant) {
-      return res
-        .status(404)
-        .json({ message: "Пользователь или ресторан не найден" });
+      return res.status(404).json({ message: "Пользователь или ресторан не найден" });
     }
 
     const order = await Order.create({
@@ -40,23 +35,42 @@ export const createOrder = async (req, res) => {
   }
 };
 
-// Получение истории заказов конкретного пользователя
+// ✅ История заказов пользователя (с полными URL картинок)
+// ✅ История заказов пользователя (с полными URL картинок)
 export const getUserOrders = async (req, res) => {
   try {
     const { userId } = req.params;
 
     const orders = await Order.find({ user: userId })
-      .populate("restaurant", "name logo")
-      .sort({ createdAt: -1 });
+      .populate("restaurant", "name image")
+      .sort({ createdAt: -1 })
+      .lean();
 
-    res.status(200).json(orders);
+    const formattedOrders = orders.map((order) => ({
+      ...order,
+      restaurant: {
+        ...order.restaurant,
+        image: order.restaurant?.image
+          ? `http://${req.headers.host}/uploads/${order.restaurant.image}`
+          : `http://${req.headers.host}/uploads/no_logo.png`,
+      },
+      items: order.items.map((item) => ({
+        ...item,
+        image: item.image
+          ? // 👇 используем uploadsFood для блюд
+            `http://${req.headers.host}/uploadsFood/${item.image}`
+          : `http://${req.headers.host}/uploads/no_image.png`,
+      })),
+    }));
+
+    res.status(200).json(formattedOrders);
   } catch (error) {
     console.error("Ошибка получения истории:", error);
     res.status(500).json({ message: "Ошибка сервера" });
   }
 };
 
-// Получение всех заказов ресторана
+// ✅ Заказы конкретного ресторана
 export const getRestaurantOrders = async (req, res) => {
   try {
     const { restaurantId } = req.params;
@@ -72,7 +86,7 @@ export const getRestaurantOrders = async (req, res) => {
   }
 };
 
-// Удаление заказа
+// ✅ Удаление заказа
 export const deleteOrder = async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -86,3 +100,4 @@ export const deleteOrder = async (req, res) => {
     res.status(500).json({ message: "Ошибка сервера" });
   }
 };
+

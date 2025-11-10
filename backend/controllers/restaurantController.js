@@ -40,13 +40,28 @@ const addRestaurant = async (req, res) => {
   }
 };
 
-// ✅ Получить все рестораны
+// ✅ Получить все рестораны (с поиском)
 const getAllRestaurants = async (req, res) => {
   try {
-    const restaurants = await restaurantModel.find().sort({ createdAt: -1 });
+    // 1️⃣ Берём параметр search из запроса
+    const { search = "" } = req.query;
 
+    // 2️⃣ Формируем условие поиска
+    const query = search
+      ? {
+          $or: [
+            { name: { $regex: search, $options: "i" } }, // ищем по названию
+            { address: { $regex: search, $options: "i" } }, // и по адресу
+          ],
+        }
+      : {};
+
+    // 3️⃣ Получаем рестораны по фильтру
+    const restaurants = await restaurantModel.find(query).sort({ createdAt: -1 });
+
+    // 4️⃣ Форматируем ответ
     const formatted = restaurants.map((r) => ({
-      _id: r._id.toString(), // ✅ обязательно строкой
+      _id: r._id.toString(),
       name: r.name,
       address: r.address,
       phone: r.phone,
@@ -61,6 +76,7 @@ const getAllRestaurants = async (req, res) => {
     res.status(500).json({ message: "Ошибка при загрузке ресторанов" });
   }
 };
+
 
 // ✅ Получить ресторан по ID (для AddFood)
 const getRestaurantById = async (req, res) => {

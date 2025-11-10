@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, View, Text, ActivityIndicator } from 'react-native';
 import DishCard from '../ui/DishCard';
+import { API_URL } from '@env';
 
 interface DishListProps {
   activeCategory: string;
@@ -15,7 +16,7 @@ export default function DishList({ activeCategory, restaurantId }: DishListProps
   useEffect(() => {
     const fetchDishes = async () => {
       try {
-        let url = `http://192.168.0.15:4000/api/food/all?restaurantId=${restaurantId}`;
+        let url = `${API_URL}/api/food/all?restaurantId=${restaurantId}`;
         if (activeCategory !== 'Все') {
           url += `&category=${encodeURIComponent(activeCategory)}`;
         }

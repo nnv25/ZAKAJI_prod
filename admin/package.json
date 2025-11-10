@@ -13,6 +13,7 @@
     "@react-input/mask": "^2.0.4",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-native-dotenv": "^3.4.11",
     "react-router-dom": "^7.9.5",
     "react-toastify": "^11.0.5"
   },

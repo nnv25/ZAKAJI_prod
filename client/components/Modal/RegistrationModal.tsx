@@ -14,6 +14,7 @@ import {
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL } from '@env';
 
 interface RegistrationModalProps {
   visible: boolean;
@@ -69,7 +70,7 @@ export default function RegistrationModal({
 
     const cleanedPhone = phone.replace(/\s|\(|\)|-/g, '');
 
-    const response = await fetch('http://192.168.0.15:4000/api/users/register', {
+    const response = await fetch(`${API_URL}/api/users/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, phone: cleanedPhone }),

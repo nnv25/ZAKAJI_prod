@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import { API_URL } from '@env';
 
 interface CategoryTabsProps {
   restaurantId: string;
@@ -29,7 +30,7 @@ export default function CategoryTabs({
     try {
       setLoading(true);
       const res = await fetch(
-        `http://192.168.0.15:4000/api/category/${restaurantId}`
+        `${API_URL}/api/category/${restaurantId}`
       );
       const data = await res.json();
 

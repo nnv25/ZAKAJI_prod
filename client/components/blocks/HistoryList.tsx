@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HistoryItem from '../blocks/HistoryItem';
+import { API_URL } from '@env';
 
 export default function HistoryList() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -19,7 +20,7 @@ export default function HistoryList() {
         }
 
         const user = JSON.parse(savedUser);
-        const res = await fetch(`http://192.168.0.15:4000/api/orders/user/${user._id}`);
+        const res = await fetch(`${API_URL}/api/orders/user/${user._id}`);
         const data = await res.json();
 
         if (res.ok) {
@@ -58,32 +59,30 @@ export default function HistoryList() {
   return (
     <View style={styles.container}>
       <FlatList
-        data={orders}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
-          <HistoryItem
-            order={{
-              id: item._id,
-              restaurantTitle: item.restaurant?.name || 'Неизвестный ресторан',
-              restaurantLogo: { uri: item.restaurant?.image || 'http://192.168.0.15:4000/uploads/no_logo.png' },
-              itemsCount: item.items.length,
-              total: item.totalPrice,
-              dateISO: item.createdAt,
-              items: item.items.map((dish) => ({
-                id: dish._id,
-                title: dish.title,
-                weight: dish.weight || '',
-                price: dish.price,
-                image: dish.image
-                  ? { uri: `http://192.168.0.15:4000/uploads/${dish.image}` }
-                  : { uri: 'http://192.168.0.15:4000/uploads/no_image.png' },
-              })),
-            }}
-          />
-        )}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 24 }}
-      />
+  data={orders}
+  keyExtractor={(item) => item._id}
+  renderItem={({ item }) => (
+    <HistoryItem
+      order={{
+        id: item._id,
+        restaurantTitle: item.restaurant?.name || 'Неизвестный ресторан',
+        restaurantLogo: { uri: item.restaurant?.image },
+        itemsCount: item.items.length,
+        total: item.totalPrice,
+        dateISO: item.createdAt,
+        items: item.items.map((dish) => ({
+          id: dish._id,
+          title: dish.title,
+          weight: dish.weight || '',
+          price: dish.price,
+          image: { uri: dish.image }, // ✅ dish.image уже абсолютный путь
+        })),
+      }}
+    />
+  )}
+  showsVerticalScrollIndicator={false}
+  contentContainerStyle={{ paddingBottom: 24 }}
+/>
     </View>
   );
 }

@@ -8,6 +8,7 @@ import { ShopContext } from "../../context/ShopContext"; // ✅ добавляе
 const EditFood = () => {
   const { id } = useParams();
   const { selectedShop } = useContext(ShopContext); // ✅ теперь selectedShop определён
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const [foodData, setFoodData] = useState({
     name: "",
@@ -26,7 +27,7 @@ const EditFood = () => {
   useEffect(() => {
     const fetchFood = async () => {
       try {
-        const res = await fetch(`http://192.168.0.15:4000/api/food/all`);
+        const res = await fetch(`${API_URL}/api/food/all`);
         const data = await res.json();
         const found = data.find((f) => f._id === id);
         if (!found) {
@@ -57,7 +58,7 @@ const EditFood = () => {
     const fetchCategories = async () => {
       try {
         const res = await fetch(
-          `http://192.168.0.15:4000/api/category/${selectedShop}`
+          `${API_URL}/api/category/${selectedShop}`
         );
         const data = await res.json();
         setCategories(data);
@@ -98,7 +99,7 @@ const EditFood = () => {
     try {
       setLoading(true);
       const res = await fetch(
-        `http://192.168.0.15:4000/api/food/update/${id}`,
+        `${API_URL}/api/food/update/${id}`,
         {
           method: "PUT",
           body: formData,

@@ -4,11 +4,12 @@ import "./ShopDropDown.css";
 const ShopDropDown = ({ selectedShop, onShopChange }) => {
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(true);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchShops = async () => {
       try {
-        const res = await fetch("http://192.168.0.15:4000/api/restaurant/all");
+        const res = await fetch(`${API_URL}/api/restaurant/all`);
         const data = await res.json();
 
         // На всякий случай конвертируем _id в строки

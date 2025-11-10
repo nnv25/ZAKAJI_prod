@@ -9,12 +9,13 @@ const RestaurantList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   // ✅ Загрузка ресторанов с сервера
   const fetchRestaurants = async () => {
     try {
       setLoading(true);
-      const res = await fetch("http://192.168.0.15:4000/api/restaurant/all");
+      const res = await fetch(`${API_URL}/api/restaurant/all`);
       const data = await res.json();
       setList(data);
       setTotalPages(1); // пока без серверной пагинации
@@ -56,7 +57,7 @@ const RestaurantList = () => {
   const banShop = async (id) => {
     try {
       const res = await fetch(
-        `http://192.168.0.15:4000/api/restaurant/ban/${id}`,
+        `${API_URL}/api/restaurant/ban/${id}`,
         { method: "PATCH" }
       );
       const data = await res.json();

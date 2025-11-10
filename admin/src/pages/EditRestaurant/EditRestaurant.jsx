@@ -16,6 +16,7 @@ const EditRestaurant = () => {
     delivery: "false",
   });
   const [image, setImage] = useState(null);
+  const API_URL = import.meta.env.VITE_API_URL;
   const [currentImage, setCurrentImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -27,7 +28,7 @@ const EditRestaurant = () => {
       setLoading(true);
       try {
         const res = await fetch(
-          `http://192.168.0.15:4000/api/restaurant/${selectedShop}`
+          `${API_URL}/api/restaurant/${selectedShop}`
         );
         const data = await res.json();
 
@@ -87,7 +88,7 @@ const EditRestaurant = () => {
     try {
       setLoading(true);
       const res = await fetch(
-        `http://192.168.0.15:4000/api/restaurant/update/${selectedShop}`,
+        `${API_URL}/api/restaurant/update/${selectedShop}`,
         {
           method: "PUT",
           body: formData,

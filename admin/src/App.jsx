@@ -9,6 +9,7 @@ import RestaurantList from "./pages/RestaurantList/RestaurantList";
 import FoodList from "./pages/FoodList/FoodList";
 import EditFood from "./pages/EditFood/EditFood";
 import CategoryManager from "./pages/CategoryManager/CategoryManager";
+import OrderList from "./pages/OrderList/OrderList";
 
 const App = () => {
   return (
@@ -34,6 +35,7 @@ const App = () => {
           <Route path="/productlist" element={<FoodList />} />
           <Route path="/edit-food/:id" element={<EditFood />} />
           <Route path="/category" element={<CategoryManager />} />
+          <Route path="/orders" element={<OrderList />} />
         </Routes>
       </div>
     </>

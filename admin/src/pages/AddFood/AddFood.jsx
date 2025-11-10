@@ -11,6 +11,7 @@ const AddFood = () => {
   const [shopName, setShopName] = useState("");
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   // Загружаем название ресторана по ID
   useEffect(() => {
@@ -18,7 +19,7 @@ const AddFood = () => {
       if (selectedShop) {
         try {
           const res = await fetch(
-            `http://192.168.0.15:4000/api/restaurant/${selectedShop}`
+            `${API_URL}/api/restaurant/${selectedShop}`
           );
           const shop = await res.json();
           setShopName(shop.name || "Не найден");
@@ -38,7 +39,7 @@ const AddFood = () => {
     const fetchCategories = async () => {
       try {
         const res = await fetch(
-          `http://192.168.0.15:4000/api/category/${selectedShop}`
+          `${API_URL}/api/category/${selectedShop}`
         );
         const data = await res.json();
         setCategories(data);
@@ -86,7 +87,7 @@ const AddFood = () => {
 
     try {
       setLoading(true);
-      const res = await fetch("http://192.168.0.15:4000/api/food/add", {
+      const res = await fetch(`${API_URL}/api/food/add`, {
         method: "POST",
         body: formData,
       });

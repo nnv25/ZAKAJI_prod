@@ -1,9 +1,15 @@
 //поисковая строка главной страницы
-import React from 'react';
+import React, { useState } from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function SearchInput() {
+export default function SearchInput({onSearch}) {
+  const [query, setQuery] = useState('');
+  const handleChange = (text) => {
+    setQuery(text);
+    onSearch(text); // 👈 уведомляем родителя при изменении текста
+  };
+
   return (
     <View style={styles.container}>
       <Ionicons name="search-outline" size={20} color="#888" />
@@ -11,6 +17,8 @@ export default function SearchInput() {
         placeholder="Поиск..."
         placeholderTextColor="#999"
         style={styles.input}
+        value={query}
+        onChangeText={handleChange}
       />
     </View>
   );

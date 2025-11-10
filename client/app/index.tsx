@@ -15,26 +15,36 @@ import SideMenu from '../components/blocks/SideMenu';
 import SearchInput from '../components/ui/SearchInput';
 import BannerCarousel from '@/components/blocks/BannerCarousel';
 import RestaurantCard from '../components/blocks/RestaurantCard';
+import { API_URL } from '@env';
 
 export default function RestaurantsScreen() {
   const [activeTab, setActiveTab] = useState('all');
   const [menuVisible, setMenuVisible] = useState(false);
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
+  // 📡 Загрузка ресторанов
+  const fetchRestaurants = async (query = '') => {
+    try {
+      setLoading(true);
+      const res = await fetch(`${API_URL}/api/restaurant/all?search=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      setRestaurants(data);
+    } catch (error) {
+      console.error('Ошибка при загрузке ресторанов:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔍 Реакция на изменение запроса
   useEffect(() => {
-    const fetchRestaurants = async () => {
-      try {
-        const res = await fetch('http://192.168.0.15:4000/api/restaurant/all');
-        const data = await res.json();
-        setRestaurants(data);
-      } catch (error) {
-        console.error('Ошибка при загрузке ресторанов:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    fetchRestaurants(searchQuery);
+  }, [searchQuery]);
 
+  // 🔄 Первый запуск
+  useEffect(() => {
     fetchRestaurants();
   }, []);
 
@@ -51,7 +61,7 @@ export default function RestaurantsScreen() {
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <View style={styles.header}>
         <Header onMenuPress={() => setMenuVisible(true)} />
-        <SearchInput />
+        <SearchInput onSearch={setSearchQuery} />
         <BannerCarousel />
 
         <View style={styles.tabs}>
@@ -66,25 +76,31 @@ export default function RestaurantsScreen() {
         </View>
       </View>
 
-      <FlatList
-        data={restaurants}
-        numColumns={3}
-        renderItem={({ item }) => (
-          <RestaurantCard
-            _id={item._id}
-            name={item.name}
-            rating={4.8}
-            reviews={163}
-            hours={`${item.worktime.weekdays}`}
-            image={{ uri: item.image }}
-          />
-        )}
-        keyExtractor={(item) => item._id.toString()}
-        columnWrapperStyle={styles.columnWrapper}
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
-        style={styles.flatList}
-      />
+      {restaurants.length === 0 ? (
+        <View style={{ alignItems: 'center', marginTop: 40 }}>
+          <Text style={{ color: '#777' }}>Ничего не найдено</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={restaurants}
+          numColumns={3}
+          renderItem={({ item }) => (
+            <RestaurantCard
+              _id={item._id}
+              name={item.name}
+              rating={4.8}
+              reviews={163}
+              hours={`${item.worktime.weekdays}`}
+              image={{ uri: item.image }}
+            />
+          )}
+          keyExtractor={(item) => item._id.toString()}
+          columnWrapperStyle={styles.columnWrapper}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+          style={styles.flatList}
+        />
+      )}
 
       <SideMenu visible={menuVisible} onClose={() => setMenuVisible(false)} />
     </SafeAreaView>
@@ -92,22 +108,10 @@ export default function RestaurantsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F9F9F9',
-  },
-  header: {
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 16,
-    paddingBottom: 10,
-  },
-  flatList: {
-    marginTop: 10,
-  },
-  tabs: {
-    flexDirection: 'row',
-    marginBottom: 12,
-  },
+  container: { flex: 1, backgroundColor: '#F9F9F9' },
+  header: { backgroundColor: '#FFFFFF', paddingHorizontal: 16, paddingBottom: 10 },
+  flatList: { marginTop: 10 },
+  tabs: { flexDirection: 'row', marginBottom: 12 },
   tab: {
     fontSize: 12,
     color: '#777',
@@ -115,16 +119,7 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
     paddingLeft: 10,
   },
-  activeTab: {
-    color: '#000',
-    borderBottomWidth: 2,
-    borderBottomColor: '#CDE589',
-  },
-  columnWrapper: {
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-  },
-  listContent: {
-    paddingBottom: 100,
-  },
+  activeTab: { color: '#000', borderBottomWidth: 2, borderBottomColor: '#CDE589' },
+  columnWrapper: { justifyContent: 'space-between', paddingHorizontal: 16 },
+  listContent: { paddingBottom: 100 },
 });

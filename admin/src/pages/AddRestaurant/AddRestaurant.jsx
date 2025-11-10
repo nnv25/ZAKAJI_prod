@@ -5,6 +5,7 @@ import "./AddRestaurant.css";
 const AddRestaurant = () => {
   const [image, setImage] = useState(null);
   const [phone, setPhone] = useState("");
+  const API_URL = import.meta.env.VITE_API_URL;
 
   // Форматирование телефона
   const formatPhone = (raw) => {
@@ -39,7 +40,7 @@ const AddRestaurant = () => {
     formData.append("image", image);
 
     try {
-      const res = await fetch("http://localhost:4000/api/restaurant/add", {
+      const res = await fetch(`${API_URL}/api/restaurant/add`, {
         method: "POST",
         body: formData,
       });

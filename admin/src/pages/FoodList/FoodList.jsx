@@ -12,6 +12,7 @@ const FoodList = () => {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   // ✅ Получаем блюда выбранного ресторана
   const fetchFoods = async () => {
@@ -24,7 +25,7 @@ const FoodList = () => {
     try {
       setLoading(true);
       const res = await fetch(
-        `http://192.168.0.15:4000/api/food/all?restaurantId=${selectedShop}`
+        `${API_URL}/api/food/all?restaurantId=${selectedShop}`
       );
       const data = await res.json();
       setList(data);
@@ -46,7 +47,7 @@ const FoodList = () => {
     if (!window.confirm("Удалить это блюдо?")) return;
 
     try {
-      const res = await fetch(`http://192.168.0.15:4000/api/food/${id}`, {
+      const res = await fetch(`${API_URL}/api/food/${id}`, {
         method: "DELETE",
       });
       const data = await res.json();

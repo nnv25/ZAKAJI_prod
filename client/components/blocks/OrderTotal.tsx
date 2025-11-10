@@ -13,6 +13,7 @@ import RegistrationModal from '../Modal/RegistrationModal';
 import OrderModal from '../Modal/OrderModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams } from 'expo-router';
+import { API_URL } from '@env';
 
 export default function OrderTotal() {
   const { getTotalPrice, cartItems, clearCart } = useCart();
@@ -75,7 +76,7 @@ export default function OrderTotal() {
         totalPrice,
       };
 
-      const res = await fetch('http://192.168.0.15:4000/api/orders/create', {
+      const res = await fetch(`${API_URL}/api/orders/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData),
@@ -121,7 +122,7 @@ export default function OrderTotal() {
     try {
       const cleanedPhone = phone.replace(/\s|\(|\)|-/g, '');
 
-      const response = await fetch('http://192.168.0.15:4000/api/users/register', {
+      const response = await fetch(`${API_URL}/api/users/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, phone: cleanedPhone }),

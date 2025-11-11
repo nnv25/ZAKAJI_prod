@@ -51,11 +51,27 @@
     height: 20px;
 }
 
+.cart-items-title5 {
+    display: grid;
+    grid-template-columns: 10fr 5fr 5fr 5fr 5fr 5fr 3fr 3fr;
+    align-items: center;
+    background-color: black;
+    color: #ffffff;
+    font-size: max(1vw, 12px);
+    padding: 10px;
+}
+
+.cart-items-name3{
+    color: white;
+    text-align: center;
+    font-family: "OpenSans";
+}
+
 .cart-items-title4 {
     display: grid;
-    grid-template-columns: 10fr 5fr 5fr 6fr 5fr 3fr;
+    grid-template-columns: 10fr 5fr 5fr 5fr 5fr 5fr 3fr 3fr;
     align-items: center;
-    background-color: #ffffff;
+    background-color: white;
     color: #ffffff;
     font-size: max(1vw, 12px);
 }

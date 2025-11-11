@@ -68,15 +68,17 @@ const OrderList = () => {
       ) : (
         <div className="container">
           <div className="cart-items">
-            <div className="cart-items-title4">
-              <p className="cart-items-name2">Заказ</p>
-              <p className="cart-items-name2">Телефон</p>
-              <p className="cart-items-name2">Дата</p>
-              <p className="cart-items-name2">Сумма</p>
-              <p className="cart-items-name2">Стол</p>
-              <p className="cart-items-name2">Комментарий</p>
+            <div className="cart-items-title5">
+              <p className="cart-items-name3">Заказ</p>
+              <p className="cart-items-name3">Телефон</p>
+              <p className="cart-items-name3">Дата</p>
+              <p className="cart-items-name3">Сумма</p>
+              <p className="cart-items-name3">Стол</p>
+              <p className="cart-items-name3">Комментарий</p>
+              <p className="cart-items-name3">Подтвердить</p>
+              <p className="cart-items-name3">Статус</p>
             </div>
-
+          </div>
             {orders.map((order) => (
               <div key={order._id} className="cart-items-title4 my-orders-order">
                 <div className="order-information__wrapper">
@@ -101,8 +103,6 @@ const OrderList = () => {
                 <p className="cart_item__txt2">{order.comment || "Отсутствует"}</p>
               </div>
             ))}
-          </div>
-
           <PageSelector
             currentPage={currentPage}
             totalPages={totalPages}

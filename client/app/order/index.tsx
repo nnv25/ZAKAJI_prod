@@ -6,7 +6,7 @@ import OrderTotal from '@/components/blocks/OrderTotal';
 import { useCart } from '@/context/CartContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   Platform,
@@ -22,9 +22,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function OrderScreen() {
   const params = useLocalSearchParams();
-  const restaurantName = (params.restaurantName as string) || 'Ресторан';
-  const restaurantId = params.restaurantId as string;
+const restaurantName = params.restaurantName as string;
+const restaurantId = params.restaurantId as string;
   const { cartItems, removeFromCart } = useCart();
+  const [tableNumber, setTableNumber] = useState('');
+  const [message, setMessage] = useState('');
 
   const renderCartItem = ({ item }) => (
     <View style={styles.cartItem}>
@@ -71,9 +73,17 @@ export default function OrderScreen() {
         }
         ListFooterComponent={
           <View style={styles.footer}>
-            <OrderForm />
+            <OrderForm 
+              tableNumber={tableNumber}
+              setTableNumber={setTableNumber}
+              message={message}
+              setMessage={setMessage}
+            />
             <View style={styles.totalSection}>
-              <OrderTotal />
+              <OrderTotal
+              tableNumber={tableNumber}
+              message={message}
+            />
             </View>
           </View>
         }

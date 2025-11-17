@@ -1,53 +1,47 @@
 //Навбар заказа
-import { useCart } from '@/context/CartContext';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useCart } from '@/context/CartContext';
 
 interface NavBarProps {
   restaurantName?: string;
-  restaurantId?: string; // 👈 добавляем id ресторана
-  showBackButton?: boolean;
+  restaurantId?: string;
 }
 
-export default function NavBar({restaurantName, restaurantId}: NavBarProps) {
+export default function NavBar({ restaurantName, restaurantId }: NavBarProps) {
   const router = useRouter();
   const { getTotalItems } = useCart();
-  const totalItems = getTotalItems();
 
   const handleBack = () => {
-  router.push({
-    pathname: '/menu',
-    params: {
-      restaurantId,
-      restaurantName,
-    },
-  });
-};
+    if (!restaurantId) {
+      router.replace('/restaurants');
+      return;
+    }
+
+    router.push({
+      pathname: '/menu',
+      params: {
+        restaurantId,
+        restaurantName,
+      },
+    });
+  };
 
   return (
     <View style={styles.header}>
       <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-        <Image 
-          source={require('../../assets/images/back_arrow.png')}
-          style={styles.backIcon}
-        />
+        <Image source={require('../../assets/images/back_arrow.png')} style={styles.backIcon} />
       </TouchableOpacity>
-      <Text style={styles.title}>
-        {restaurantName || 'Ресторан'}
-      </Text>
+
+      <Text style={styles.title}>{restaurantName || 'Ресторан'}</Text>
+
       <View style={styles.orderContainer}>
         <TouchableOpacity style={styles.orderButton}>
-          <Image 
-            source={require('../../assets/images/order_icon.png')}
-            style={styles.orderIcon}
-          />
-          {/* Бейдж с количеством */}
-          {totalItems > 0 && (
+          <Image source={require('../../assets/images/order_icon.png')} style={styles.orderIcon} />
+          {getTotalItems() > 0 && (
             <View style={styles.badge}>
-              <Text style={styles.badgeText}>
-                {totalItems > 99 ? '99+' : totalItems}
-              </Text>
+              <Text style={styles.badgeText}>{getTotalItems()}</Text>
             </View>
           )}
         </TouchableOpacity>

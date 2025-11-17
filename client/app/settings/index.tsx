@@ -12,6 +12,8 @@ import {
     View,
 } from 'react-native';
 import SettingsNavBar from '../../components/blocks/SettingsNavbar';
+import { API_URL } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SettingsScreen() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -19,15 +21,51 @@ export default function SettingsScreen() {
   const toggleSwitch = () => setNotificationsEnabled((prev) => !prev);
 
   const handleDeleteAccount = () => {
-    Alert.alert(
-      'Удалить аккаунт',
-      'Вы уверены, что хотите удалить аккаунт? Это действие нельзя отменить.',
-      [
-        { text: 'Отмена', style: 'cancel' },
-        { text: 'Удалить', style: 'destructive', onPress: () => console.log('Аккаунт удалён') },
-      ]
-    );
-  };
+  Alert.alert(
+    "Удалить аккаунт",
+    "Вы уверены, что хотите удалить аккаунт? Это действие нельзя отменить.",
+    [
+      { text: "Отмена", style: "cancel" },
+      {
+        text: "Удалить",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            const userId = await AsyncStorage.getItem("userId");
+
+            if (!userId) {
+              Alert.alert("Ошибка", "ID пользователя не найден");
+              return;
+            }
+
+            const res = await fetch(`${API_URL}/api/users/${userId}`, {
+              method: "DELETE",
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+              Alert.alert("Ошибка", data.message || "Не удалось удалить аккаунт");
+              return;
+            }
+
+            // удаляем локальные данные
+            await AsyncStorage.removeItem("userId");
+            await AsyncStorage.removeItem("phone");
+            await AsyncStorage.removeItem("name");
+
+            Alert.alert("Готово", "Ваш аккаунт удалён");
+
+            // перенаправление на экран регистрации
+            // navigation.reset({index: 0, routes: [{ name: "Auth" }]});
+          } catch (err) {
+            Alert.alert("Ошибка", "Ошибка сервера");
+          }
+        },
+      },
+    ]
+  );
+};
 
   return (
     <SafeAreaView style={styles.container}>

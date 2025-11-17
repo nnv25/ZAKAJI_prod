@@ -9,7 +9,6 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -17,7 +16,7 @@ interface LogoutModalProps {
   visible: boolean;
   fadeAnim: Animated.Value;
   onClose: () => void;
-  onLogout: () => void; // вызывается после успешного выхода
+  onLogout: () => void; 
 }
 
 export default function LogoutModal({ visible, fadeAnim, onClose, onLogout }: LogoutModalProps) {
@@ -27,6 +26,9 @@ export default function LogoutModal({ visible, fadeAnim, onClose, onLogout }: Lo
     try {
       setLoading(true);
       await AsyncStorage.removeItem('user');
+      await AsyncStorage.removeItem('userId');
+      await AsyncStorage.removeItem('phone');
+      await AsyncStorage.removeItem('name');
       Alert.alert('Выход', 'Вы успешно вышли из аккаунта');
       onLogout();
     } catch (error) {
@@ -40,31 +42,25 @@ export default function LogoutModal({ visible, fadeAnim, onClose, onLogout }: Lo
   return (
     <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
       <Animated.View style={[styles.modalOverlay, { opacity: fadeAnim }]}>
-        <BlurView intensity={30} tint="light" style={styles.blurContainer}>
-          <View style={styles.modalContent}>
-            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-              <BlurView intensity={40} tint="light" style={styles.closeButtonBackground}>
-                <Ionicons name="close" size={20} color="#000" />
-              </BlurView>
-            </TouchableOpacity>
+        <View style={styles.modalBox}>
+          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+            <Ionicons name="close" size={22} color="#fff" /> 
+          </TouchableOpacity>
 
-            <Text style={styles.modalTitle}>
-              Вы действительно хотите выйти из аккаунта?
-            </Text>
+          <Text style={styles.modalTitle}>Вы действительно хотите выйти из аккаунта?</Text>
 
-            <TouchableOpacity
-              style={[styles.logoutButton, loading && styles.disabledButton]}
-              onPress={handleLogout}
-              disabled={loading}
-            >
-              {loading ? (
-                <ActivityIndicator color="#000" />
-              ) : (
-                <Text style={styles.logoutText}>Выйти</Text>
-              )}
-            </TouchableOpacity>
-          </View>
-        </BlurView>
+          <TouchableOpacity
+            style={[styles.logoutButton, loading && styles.disabledButton]}
+            onPress={handleLogout}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#000" />
+            ) : (
+              <Text style={styles.logoutText}>Выйти</Text>
+            )}
+          </TouchableOpacity>
+        </View>
       </Animated.View>
     </Modal>
   );
@@ -73,44 +69,37 @@ export default function LogoutModal({ visible, fadeAnim, onClose, onLogout }: Lo
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.3)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
-  blurContainer: {
+  modalBox: {
+    backgroundColor: '#848484',
     borderRadius: 24,
-    overflow: 'hidden',
     width: '100%',
     maxWidth: 400,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  modalContent: {
-    borderRadius: 24,
     padding: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 6,
   },
   closeButton: {
     position: 'absolute',
     top: 16,
     right: 16,
-    zIndex: 1,
-  },
-  closeButtonBackground: {
-    borderRadius: 20,
-    width: 36,
-    height: 36,
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: '600',
     textAlign: 'center',
+    color: '#F5F5F5', 
     marginBottom: 20,
     marginTop: 10,
-    color: '#000',
   },
   logoutButton: {
     backgroundColor: '#CDE589',
@@ -124,9 +113,11 @@ const styles = StyleSheet.create({
   logoutText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#000',
+    color: '#000', 
   },
   disabledButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: 'rgba(205, 229, 137, 0.6)',
   },
 });
+
+

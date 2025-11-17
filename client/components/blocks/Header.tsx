@@ -1,18 +1,27 @@
 //Header главной страницы
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Animated, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
-import LogoutModal from '@/components/Modal/LogoutModal'; // 👈 импорт модалки
+import LogoutModal from '@/components/Modal/LogoutModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-interface HeaderProps {
-  onMenuPress: () => void;
-}
-
-export default function Header({ onMenuPress }: HeaderProps) {
+export default function Header({ onMenuPress }) {
   const [logoutVisible, setLogoutVisible] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(0));
+  const [userLogged, setUserLogged] = useState(false); // 🔥 состояние авторизации
 
+  // Проверяем авторизацию при каждом рендере
+  useEffect(() => {
+    const checkUser = async () => {
+      const user = await AsyncStorage.getItem('user');
+      setUserLogged(!!user);
+    };
+    checkUser();
+  }, []);
+
+  // открыть модалку
   const handleOpenLogout = () => {
+    if (!userLogged) return; // ❗ если не авторизован — не открываем
     setLogoutVisible(true);
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -21,6 +30,7 @@ export default function Header({ onMenuPress }: HeaderProps) {
     }).start();
   };
 
+  // закрыть модалку
   const handleCloseLogout = () => {
     Animated.timing(fadeAnim, {
       toValue: 0,
@@ -29,7 +39,10 @@ export default function Header({ onMenuPress }: HeaderProps) {
     }).start(() => setLogoutVisible(false));
   };
 
-  const handleLogout = () => {
+  // logout → обновляем иконку
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('user');
+    setUserLogged(false); // 🔥 обновили состояние
     handleCloseLogout();
   };
 
@@ -48,7 +61,11 @@ export default function Header({ onMenuPress }: HeaderProps) {
 
       {/* иконка профиля */}
       <TouchableOpacity onPress={handleOpenLogout}>
-        <Ionicons name="person-outline" size={28} color="#000" />
+        <Ionicons
+          name={userLogged ? 'person-circle-outline' : 'person-outline'} // 🔥 МЕНЯЕТСЯ ИКОНКА
+          size={30}
+          color="#000"
+        />
       </TouchableOpacity>
 
       {/* модалка выхода */}

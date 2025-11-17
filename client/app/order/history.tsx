@@ -9,13 +9,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function OrderHistoryScreen() {
   const params = useLocalSearchParams();
-  const restaurantName = (params.restaurantName as string) || 'История заказов';
+  const restaurantName = params.restaurantName as string;
+  const restaurantId = params.restaurantId as string;
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-      <OrderNavBar restaurantName={restaurantName} />
+      <OrderNavBar restaurantName={restaurantName} restaurantId={restaurantId} />
       <OrderTabs />
-      <HistoryList />
+      <HistoryList restaurantId={restaurantId} />
     </SafeAreaView>
   );
 }

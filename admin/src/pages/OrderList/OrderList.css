@@ -53,7 +53,7 @@
 
 .cart-items-title5 {
     display: grid;
-    grid-template-columns: 10fr 5fr 5fr 5fr 5fr 5fr 3fr 3fr;
+    grid-template-columns: 10fr 5fr 5fr 3fr 3fr 6fr 3fr 3fr;
     align-items: center;
     background-color: black;
     color: #ffffff;
@@ -69,11 +69,18 @@
 
 .cart-items-title4 {
     display: grid;
-    grid-template-columns: 10fr 5fr 5fr 5fr 5fr 5fr 3fr 3fr;
+    grid-template-columns: 10fr 5fr 5fr 3fr 3fr 6fr 3fr 3fr;
     align-items: center;
     background-color: white;
     color: #ffffff;
     font-size: max(1vw, 12px);
+    padding: 5px;
+}
+
+.comment-cell {
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .order-information__wrapper{
@@ -92,6 +99,9 @@
     font-family: "OpenSans";
     font-size: 14px;
     color: black;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .cart_input {
@@ -101,6 +111,30 @@
     border-radius: 10px;
     border: 1px black solid;
     margin: 0 auto;
+}
+
+.order-btn{
+    background-color: black;
+    color: white;
+    padding: 3px;
+    border-radius: 10px;
+    font-family: "OpenSans";
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.status-active {
+    color: green;
+    font-weight: 600;
+    font-family: "OpenSans";
+    font-size: 12px;
+}
+
+.status-inactive {
+  color: red;
+  font-weight: 600;
+  font-family: "OpenSans";
+    font-size: 12px;
 }
 
 @media(max-width:990px){

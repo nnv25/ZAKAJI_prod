@@ -6,14 +6,12 @@ const addRestaurant = async (req, res) => {
     const { name, address, phone, delivery, weekdays, saturday, sunday } =
       req.body;
 
-    // Проверка на наличие изображения
     if (!req.file) {
       return res
         .status(400)
         .json({ success: false, message: "Изображение обязательно" });
     }
 
-    // Очистка телефона от символов
     const cleanedPhone = phone.replace(/\D/g, "");
     if (cleanedPhone.length !== 11) {
       return res.status(400).json({
@@ -22,7 +20,6 @@ const addRestaurant = async (req, res) => {
       });
     }
 
-    // Создание нового ресторана
     const restaurant = new restaurantModel({
       name,
       address,
@@ -43,23 +40,19 @@ const addRestaurant = async (req, res) => {
 // ✅ Получить все рестораны (с поиском)
 const getAllRestaurants = async (req, res) => {
   try {
-    // 1️⃣ Берём параметр search из запроса
     const { search = "" } = req.query;
 
-    // 2️⃣ Формируем условие поиска
     const query = search
       ? {
           $or: [
-            { name: { $regex: search, $options: "i" } }, // ищем по названию
-            { address: { $regex: search, $options: "i" } }, // и по адресу
+            { name: { $regex: search, $options: "i" } },
+            { address: { $regex: search, $options: "i" } },
           ],
         }
       : {};
 
-    // 3️⃣ Получаем рестораны по фильтру
     const restaurants = await restaurantModel.find(query).sort({ createdAt: -1 });
 
-    // 4️⃣ Форматируем ответ
     const formatted = restaurants.map((r) => ({
       _id: r._id.toString(),
       name: r.name,
@@ -68,6 +61,7 @@ const getAllRestaurants = async (req, res) => {
       delivery: r.delivery,
       worktime: r.worktime,
       image: `http://${req.headers.host}/uploads/${r.image}`,
+      isBanned: r.isBanned,
     }));
 
     res.json(formatted);
@@ -77,8 +71,7 @@ const getAllRestaurants = async (req, res) => {
   }
 };
 
-
-// ✅ Получить ресторан по ID (для AddFood)
+// ✅ Получить ресторан по ID
 const getRestaurantById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -96,6 +89,7 @@ const getRestaurantById = async (req, res) => {
       delivery: restaurant.delivery,
       worktime: restaurant.worktime,
       image: `http://${req.headers.host}/uploads/${restaurant.image}`,
+      isBanned: restaurant.isBanned,
     });
   } catch (error) {
     console.error("Ошибка при получении ресторана по ID:", error);
@@ -117,7 +111,6 @@ const updateRestaurant = async (req, res) => {
         .json({ success: false, message: "Ресторан не найден" });
     }
 
-    // Обновляем поля
     restaurant.name = name || restaurant.name;
     restaurant.address = address || restaurant.address;
     restaurant.phone = phone || restaurant.phone;
@@ -190,3 +183,4 @@ export {
   deleteRestaurant,
   toggleBanRestaurant,
 };
+

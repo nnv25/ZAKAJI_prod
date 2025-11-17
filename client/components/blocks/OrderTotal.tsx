@@ -15,7 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams } from 'expo-router';
 import { API_URL } from '@env';
 
-export default function OrderTotal() {
+export default function OrderTotal({ tableNumber, message }) {
   const { getTotalPrice, cartItems, clearCart } = useCart();
   const totalPrice = getTotalPrice();
   const params = useLocalSearchParams();
@@ -30,32 +30,33 @@ export default function OrderTotal() {
   const [agree1, setAgree1] = useState(false);
   const [agree2, setAgree2] = useState(false);
 
-  const [tableNumber, setTableNumber] = useState('');
-  const [message, setMessage] = useState('');
-
   /** 🔹 Проверка пользователя и открытие модалки при необходимости */
   const handlePlaceOrder = async () => {
-    if (cartItems.length === 0) {
-      alert('Добавьте товары в корзину');
-      return;
-    }
+  if (cartItems.length === 0) {
+    alert('Добавьте товары в корзину');
+    return;
+  }
 
-    const savedUser = await AsyncStorage.getItem('user');
-    if (savedUser) {
-      // Пользователь уже зарегистрирован — оформляем заказ
-      await handleSendOrder(JSON.parse(savedUser));
-      return;
-    }
+  if (!tableNumber || !tableNumber.trim()) {
+    Alert.alert('Ошибка', 'Пожалуйста, введите номер стола');
+    return;
+  }
 
-    // Иначе показываем окно регистрации
-    setModalVisible(true);
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 300,
-      easing: Easing.ease,
-      useNativeDriver: true,
-    }).start();
-  };
+  const savedUser = await AsyncStorage.getItem('user');
+  if (savedUser) {
+    await handleSendOrder(JSON.parse(savedUser));
+    return;
+  }
+
+  setModalVisible(true);
+  Animated.timing(fadeAnim, {
+    toValue: 1,
+    duration: 300,
+    easing: Easing.ease,
+    useNativeDriver: true,
+  }).start();
+};
+
 
   /** 🔹 Отправка заказа на сервер */
   const handleSendOrder = async (user: any) => {

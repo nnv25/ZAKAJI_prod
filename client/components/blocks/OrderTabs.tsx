@@ -4,33 +4,21 @@ import { usePathname, useRouter, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-export type TabType = 'order' | 'history';
-
 export default function OrderTabs() {
   const router = useRouter();
   const pathname = usePathname();
-  const params = useLocalSearchParams(); // 👈 добавили получение параметров
+  const params = useLocalSearchParams();
 
-  const activeTab: TabType = pathname.includes('/order/history') ? 'history' : 'order';
+  const restaurantId = params.restaurantId as string;
+  const restaurantName = params.restaurantName as string;
 
-  const handleTabPress = (tab: TabType) => {
-    if (tab === 'order') {
-      router.push({
-        pathname: '/order',
-        params: {
-          restaurantId: params.restaurantId, // 👈 передаём ID ресторана
-          restaurantName: params.restaurantName, // 👈 и его имя
-        },
-      });
-    } else {
-      router.push({
-        pathname: '/order/history',
-        params: {
-          restaurantId: params.restaurantId,
-          restaurantName: params.restaurantName,
-        },
-      });
-    }
+  const activeTab = pathname.includes('/order/history') ? 'history' : 'order';
+
+  const navigate = (screen: 'order' | 'history') => {
+    router.push({
+      pathname: `/order/${screen === 'order' ? '' : 'history'}`,
+      params: { restaurantId, restaurantName },
+    });
   };
 
   return (
@@ -38,7 +26,7 @@ export default function OrderTabs() {
       <View style={styles.tabs}>
         <TouchableOpacity
           style={[styles.tab, activeTab === 'order' && styles.activeTab]}
-          onPress={() => handleTabPress('order')}
+          onPress={() => navigate('order')}
         >
           <Text style={[styles.tabText, activeTab === 'order' && styles.activeTabText]}>
             Заказ
@@ -47,7 +35,7 @@ export default function OrderTabs() {
 
         <TouchableOpacity
           style={[styles.tab, activeTab === 'history' && styles.activeTab]}
-          onPress={() => handleTabPress('history')}
+          onPress={() => navigate('history')}
         >
           <Text style={[styles.tabText, activeTab === 'history' && styles.activeTabText]}>
             История

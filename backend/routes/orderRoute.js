@@ -4,6 +4,7 @@ import {
   getUserOrders,
   getRestaurantOrders,
   deleteOrder,
+  toggleOrderStatus,
 } from "../controllers/orderController.js";
 
 const router = express.Router();
@@ -19,5 +20,7 @@ router.get("/restaurant/:restaurantId", getRestaurantOrders);
 
 // удалить заказ
 router.delete("/:orderId", deleteOrder);
+
+router.patch("/:orderId/toggle", toggleOrderStatus);
 
 export default router;

@@ -1,17 +1,17 @@
 import Order from "../models/orderModel.js";
 import User from "../models/userModel.js";
 import Restaurant from "../models/restaurantModel.js";
+import { io } from "../server.js";
 
 // ✅ Создание нового заказа
 export const createOrder = async (req, res) => {
   try {
     const { userId, restaurantId, items, tableNumber, comment, totalPrice } = req.body;
 
-    if (!userId || !restaurantId || !items?.length) {
+    if (!userId || !restaurantId || !items?.length || !tableNumber) {
       return res.status(400).json({ message: "Не хватает данных для оформления заказа" });
     }
 
-    // Проверим пользователя и ресторан
     const user = await User.findById(userId);
     const restaurant = await Restaurant.findById(restaurantId);
 
@@ -23,10 +23,13 @@ export const createOrder = async (req, res) => {
       user: userId,
       restaurant: restaurantId,
       items,
-      tableNumber,
+      tableNumber: String(tableNumber),
       comment,
       totalPrice,
     });
+
+    // 🔥 отправляем событие ВСЕМ клиентам
+    io.emit("newOrder", order);
 
     res.status(201).json({ message: "Заказ успешно оформлен", order });
   } catch (error) {
@@ -97,6 +100,26 @@ export const deleteOrder = async (req, res) => {
     res.status(200).json({ message: "Заказ удалён" });
   } catch (error) {
     console.error("Ошибка удаления заказа:", error);
+    res.status(500).json({ message: "Ошибка сервера" });
+  }
+};
+
+// ✅ Обновление статуса (активация/деактивация)
+export const toggleOrderStatus = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Заказ не найден" });
+    }
+
+    order.active = !order.active;
+    await order.save();
+
+    res.status(200).json({ message: "Статус заказа обновлён", active: order.active });
+  } catch (error) {
+    console.error("Ошибка изменения статуса заказа:", error);
     res.status(500).json({ message: "Ошибка сервера" });
   }
 };

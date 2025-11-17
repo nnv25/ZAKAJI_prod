@@ -26,14 +26,10 @@ const orderSchema = new mongoose.Schema(
         image: String,
       },
     ],
-    tableNumber: { type: String },
+    tableNumber: { type: String, required: true },
     comment: { type: String },
     totalPrice: { type: Number, required: true },
-    status: {
-      type: String,
-      enum: ["pending", "accepted", "completed", "cancelled"],
-      default: "pending",
-    },
+    active: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

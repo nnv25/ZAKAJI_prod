@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./ShopDropDown.css";
 
-const ShopDropDown = ({ selectedShop, onShopChange }) => {
+const ShopDropDown = ({ selectedShop, onShopChange, userRole }) => {
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(true);
   const API_URL = import.meta.env.VITE_API_URL;
@@ -11,14 +11,7 @@ const ShopDropDown = ({ selectedShop, onShopChange }) => {
       try {
         const res = await fetch(`${API_URL}/api/restaurant/all`);
         const data = await res.json();
-
-        // На всякий случай конвертируем _id в строки
-        const normalized = data.map((shop) => ({
-          ...shop,
-          _id: String(shop._id),
-        }));
-
-        setShops(normalized);
+        setShops(data);
       } catch (error) {
         console.error("Ошибка при загрузке ресторанов:", error);
       } finally {
@@ -33,13 +26,14 @@ const ShopDropDown = ({ selectedShop, onShopChange }) => {
     <div className="shopdropdown-container">
       {loading ? (
         <select className="shop-dropdown" disabled>
-          <option>Загрузка ресторанов...</option>
+          <option>Загрузка...</option>
         </select>
       ) : (
         <select
           className="shop-dropdown"
           value={selectedShop || ""}
           onChange={(e) => onShopChange(e.target.value)}
+          disabled={userRole !== "superadmin"} // 👈 только супер-админ может менять
         >
           <option value="">Выберите ресторан</option>
           {shops.length > 0 ? (
@@ -49,7 +43,7 @@ const ShopDropDown = ({ selectedShop, onShopChange }) => {
               </option>
             ))
           ) : (
-            <option disabled>Нет доступных ресторанов</option>
+            <option disabled>Нет ресторанов</option>
           )}
         </select>
       )}

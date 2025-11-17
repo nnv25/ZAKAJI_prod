@@ -2,9 +2,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
-export default function OrderForm() {
-  const [tableNumber, setTableNumber] = useState('');
-  const [message, setMessage] = useState('');
+export default function OrderForm({ tableNumber, setTableNumber, message, setMessage }) {
+  
 
   return (
     <View style={styles.container}>

@@ -22,7 +22,8 @@ restaurantRouter.post("/add", upload.single("image"), addRestaurant);
 restaurantRouter.get("/all", getAllRestaurants);
 restaurantRouter.get("/:id", getRestaurantById);
 restaurantRouter.put("/update/:id", upload.single("image"), updateRestaurant);
-restaurantRouter.delete("/:id", deleteRestaurant); // 👈 удалить
-restaurantRouter.patch("/ban/:id", toggleBanRestaurant); // 👈 бан/разбан
+restaurantRouter.delete("/:id", deleteRestaurant);
+restaurantRouter.patch("/ban/:id", toggleBanRestaurant);
 
 export default restaurantRouter;
+

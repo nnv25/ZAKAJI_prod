@@ -4,7 +4,7 @@ import { assets } from "../../assets/assets";
 import ShopDropDown from "../ShopDropDown/ShopDropDown";
 import { ShopContext } from "../../context/ShopContext";
 
-const Navbar = () => {
+const Navbar = ({ onLogout, userRole }) => {
   const { selectedShop, setSelectedShop } = useContext(ShopContext);
 
   // выбор ресторана
@@ -13,10 +13,21 @@ const Navbar = () => {
     setSelectedShop(shopId);
   };
 
-  // сброс ресторана
+  // сброс ресторана (только для superadmin)
   const handleResetShop = () => {
+    if (userRole !== "superadmin") return; // 👈 защита
     console.log("Ресторан сброшен");
     setSelectedShop("");
+  };
+
+  // выход из аккаунта
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("restaurantId");
+    localStorage.removeItem("username");
+    setSelectedShop("");
+    if (onLogout) onLogout(); // уведомляем App
   };
 
   return (
@@ -27,15 +38,18 @@ const Navbar = () => {
         <ShopDropDown
           selectedShop={selectedShop}
           onShopChange={handleShopChange}
+          userRole={userRole}
         />
 
-        <button className="reset-shop-button" onClick={handleResetShop}>
-          Сбросить ресторан
-        </button>
+        {userRole === "superadmin" && (
+          <button className="reset-shop-button" onClick={handleResetShop}>
+            Сбросить ресторан
+          </button>
+        )}
       </div>
 
       <div className="exit-container">
-        <button className="exit-shop-button">
+        <button className="exit-shop-button" onClick={handleLogout}>
           <img src={assets.logout_icon} alt="Выйти" className="logout-icon" />
         </button>
       </div>

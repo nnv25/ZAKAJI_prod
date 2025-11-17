@@ -1,4 +1,5 @@
 //Модальное окно полного блюда
+// Модальное окно полного блюда
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import Modal from 'react-native-modal';
@@ -49,25 +50,18 @@ export default function ModalCard({
       animationOutTiming={400}
       style={styles.modal}
     >
-      <BlurView intensity={30} tint="light" style={styles.blurContainer}>
+      <View style={[styles.blurContainer, { backgroundColor: '#848484' }]}>
         <View style={styles.modalContent}>
-          {/* Верхняя часть с изображением */}
           <View style={styles.imageContainer}>
             <Image source={image} style={styles.modalImage} />
-            <TouchableOpacity 
-              style={styles.closeButton} 
-              onPress={onClose}
-            >
-              <BlurView intensity={40} tint="light" style={styles.closeButtonBackground}>
-                <Ionicons name="close" size={20} color="#000" />
-              </BlurView>
+            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+              <Ionicons name="close" size={22} color="#FFFFFF" /> 
             </TouchableOpacity>
           </View>
 
-          {/* Контент модального окна */}
-          <BlurView intensity={15} tint="light" style={styles.modalBody}>
+          <View style={styles.modalBody}>
             <Text style={styles.modalTitle}>{title}</Text>
-            
+
             <View style={styles.ratingRow}>
               <View style={styles.ratingContainer}>
                 <Ionicons name="star" size={16} color="#F5B800" />
@@ -75,50 +69,46 @@ export default function ModalCard({
               </View>
               <Text style={styles.modalWeight}>{weight}</Text>
             </View>
-            
-            {/* Полное описание */}
-            <Text style={styles.modalDescription}>
-              {description}
-            </Text>
-            
-            {/* Счетчик количества */}
+
+            <Text style={styles.modalDescription}>{description}</Text>
+
             <View style={styles.quantitySection}>
               <Text style={styles.quantityLabel}>Количество:</Text>
               <View style={styles.quantitySelector}>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={[styles.quantityButton, quantity === 0 && styles.disabledButton]}
                   onPress={onDecreaseQuantity}
                   disabled={quantity === 0}
                 >
-                  <Ionicons name="remove" size={20} color={quantity === 0 ? '#999' : '#000'} />
+                  <Ionicons name="remove" size={20} color="#000" />
                 </TouchableOpacity>
                 <Text style={styles.quantity}>{quantity}</Text>
-                <TouchableOpacity 
-                  style={styles.quantityButton} 
-                  onPress={onIncreaseQuantity}
-                >
+                <TouchableOpacity style={styles.quantityButton} onPress={onIncreaseQuantity}>
                   <Ionicons name="add" size={20} color="#000" />
                 </TouchableOpacity>
               </View>
             </View>
 
-            {/* Нижняя часть с ценой и кнопкой */}
             <View style={styles.modalFooter}>
               <View style={styles.priceContainer}>
                 <Text style={styles.totalPrice}>Сумма:</Text>
                 <Text style={styles.modalPrice}>₽ {price * quantity}</Text>
               </View>
               <View style={styles.modalButton}>
-                <Button
-                  title={quantity === 0 ? "Заказать" : `Заказать ${quantity} шт`}
+                <TouchableOpacity
+                  style={[styles.addButton, quantity === 0 && styles.disabledButton]}
                   onPress={onAddToCart}
                   disabled={quantity === 0}
-                />
+                >
+                  <Text style={styles.addButtonText}>
+                    {quantity === 0 ? 'Заказать' : `Заказать`}
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
-          </BlurView>
+          </View>
         </View>
-      </BlurView>
+      </View>
     </Modal>
   );
 }
@@ -134,7 +124,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     width: '100%',
     maxWidth: 400,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   modalContent: {
     borderRadius: 24,
@@ -152,28 +141,18 @@ const styles = StyleSheet.create({
     top: 16,
     right: 16,
     zIndex: 1,
-  },
-  closeButtonBackground: {
+    backgroundColor: '#000000',
     borderRadius: 20,
-    width: 36,
-    height: 36,
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    padding: 6,
   },
   modalBody: {
     padding: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
   },
   modalTitle: {
     fontSize: 24,
     fontWeight: '700',
     marginBottom: 12,
-    color: 'black',
-    textShadowColor: 'rgba(255, 255, 255, 0.9)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
+    color: '#FFFFFF',
   },
   ratingRow: {
     flexDirection: 'row',
@@ -187,30 +166,21 @@ const styles = StyleSheet.create({
   },
   modalRating: {
     fontSize: 14,
-    color: '#000',
+    color: '#FFFFFF',
     marginLeft: 6,
     fontWeight: '500',
-    textShadowColor: 'rgba(255, 255, 255, 0.9)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
   },
   modalWeight: {
     fontSize: 14,
-    color: '#000',
+    color: '#FFFFFF',
     fontWeight: '500',
-    textShadowColor: 'rgba(255, 255, 255, 0.9)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
   },
   modalDescription: {
     fontSize: 16,
     lineHeight: 22,
-    color: '#000',
+    color: '#FFFFFF',
     marginBottom: 24,
     textAlign: 'left',
-    textShadowColor: 'rgba(255, 255, 255, 0.9)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
   },
   quantitySection: {
     flexDirection: 'row',
@@ -225,30 +195,25 @@ const styles = StyleSheet.create({
   quantityLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#000',
-    textShadowColor: 'rgba(255, 255, 255, 0.9)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
+    color: '#FFFFFF',
   },
   quantitySelector: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    backgroundColor: '#CDE589',
     borderRadius: 12,
     padding: 4,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   quantityButton: {
     width: 36,
     height: 36,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: "#C6E583"/*'rgba(255, 255, 255, 0.6)'*/,
+    backgroundColor: '#CDE589',
     borderRadius: 10,
   },
   disabledButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: 'rgba(205, 229, 137, 0.4)',
   },
   quantity: {
     fontSize: 16,
@@ -256,10 +221,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     minWidth: 20,
     textAlign: 'center',
-    color: '#000',
-    textShadowColor: 'rgba(255, 255, 255, 0.9)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
+    color: '#000000',
   },
   modalFooter: {
     flexDirection: 'row',
@@ -271,22 +233,29 @@ const styles = StyleSheet.create({
   },
   totalPrice: {
     fontSize: 14,
-    color: '#000',
+    color: '#FFFFFF',
     marginBottom: 4,
-    textShadowColor: 'rgba(255, 255, 255, 0.9)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
   },
   modalPrice: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#000',
-    textShadowColor: 'rgba(255, 255, 255, 0.9)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
+    color: '#FFFFFF',
   },
   modalButton: {
     flex: 1,
     marginLeft: 16,
   },
+  addButton: {
+    backgroundColor: '#CDE589',
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+  },
+  addButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
 });
+

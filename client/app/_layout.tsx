@@ -1,9 +1,14 @@
 // app/_layout.tsx
 import { Stack } from 'expo-router';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CartProvider } from '../context/CartContext';
+import { initOneSignal } from '../lib/oneSignal';
 
 export default function RootLayout() {
+  useEffect(() => {
+    initOneSignal();
+  }, []);
+
   return (
     <CartProvider>
       <Stack
@@ -23,7 +28,7 @@ export default function RootLayout() {
         <Stack.Screen
           name="menu/index"
           options={{
-            animation: 'slide_from_left', // 👈 возвращаемся из ордера — экран едет слева направо
+            animation: 'slide_from_left',
           }}
         />
 
@@ -31,7 +36,7 @@ export default function RootLayout() {
         <Stack.Screen
           name="order/index"
           options={{
-            animation: 'slide_from_right', // переход в заказ (вперёд)
+            animation: 'slide_from_right',
           }}
         />
 
